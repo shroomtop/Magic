@@ -39,6 +39,46 @@ window.addEventListener('DOMContentLoaded', () => {
   if (boxes[0]) boxes[0].focus();
 });
   </script>
+  <script>
+// Auto-fill 'Describe your topic/subject' from hash
+(function(){
+  function getHashText() {
+    return decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
+  }
+  function tryFillBox() {
+    const hash = getHashText();
+    if(!hash) return false;
+    // Try all likely selectors
+    const selectors = [
+      'input[placeholder*="topic"]',
+      'input[placeholder*="subject"]',
+      'input[name="topic"]',
+      '#topic',
+      '#subject',
+      'input[placeholder*="e.g."]',
+      'input', // fallback: first input
+    ];
+    for(const sel of selectors) {
+      const box = document.querySelector(sel);
+      if(box && (!box.value || box.value.startsWith('e.g.'))) {
+        box.value = hash;
+        box.dispatchEvent(new Event('input', { bubbles: true })); // for React/Vue
+        box.focus();
+        return true;
+      }
+    }
+    return false;
+  }
+  // Try immediately, then poll up to 2s
+  if(!tryFillBox()){
+    let tries = 0;
+    const maxTries = 20;
+    const interval = setInterval(()=>{
+      if(tryFillBox() || ++tries > maxTries) clearInterval(interval);
+    }, 100);
+  }
+})();
+  </script>
 <body class="min-h-screen flex flex-col items-center justify-center px-2 py-8 bg-black">
   <main class="w-full max-w-xl glass p-6 flex flex-col gap-6">
     <header class="mb-2 text-center">
