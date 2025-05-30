@@ -13,81 +13,17 @@
     .prompt-output { white-space: pre-wrap; font-size: 1.02em; }
     .btn-copy { transition: all 0.2s; }
     .btn-copy.copied { background: #16f5b4 !important; color: #18181b !important;}
+    .checkbox-emerald:checked { accent-color: #16f5b4; }
   </style>
 </head>
-  <script>
-window.addEventListener('DOMContentLoaded', () => {
-  // Find the hash, decode, replace + with space for URL-compat.
-  const hash = decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
-  // Try every possible input for 'describe your topic/subject'
-  const boxes = [
-    document.querySelector('input[placeholder*="topic"]'),
-    document.querySelector('input[placeholder*="subject"]'),
-    document.querySelector('input[name="topic"]'),
-    document.querySelector('#topic'),
-    document.querySelector('#subject'),
-    document.querySelectorAll('input')[1], // fallback: 2nd input if order is always same
-  ];
-  for (const box of boxes) {
-    if (box && hash && (!box.value || box.value === "" || box.value.startsWith("e.g."))) {
-      box.value = hash;
-      box.dispatchEvent(new Event('input', { bubbles: true })); // trigger frameworks
-      break;
-    }
-  }
-  // Optional: scroll to or focus the box for user
-  if (boxes[0]) boxes[0].focus();
-});
-  </script>
-  <script>
-// Auto-fill 'Describe your topic/subject' from hash
-(function(){
-  function getHashText() {
-    return decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
-  }
-  function tryFillBox() {
-    const hash = getHashText();
-    if(!hash) return false;
-    // Try all likely selectors
-    const selectors = [
-      'input[placeholder*="topic"]',
-      'input[placeholder*="subject"]',
-      'input[name="topic"]',
-      '#topic',
-      '#subject',
-      'input[placeholder*="e.g."]',
-      'input', // fallback: first input
-    ];
-    for(const sel of selectors) {
-      const box = document.querySelector(sel);
-      if(box && (!box.value || box.value.startsWith('e.g.'))) {
-        box.value = hash;
-        box.dispatchEvent(new Event('input', { bubbles: true })); // for React/Vue
-        box.focus();
-        return true;
-      }
-    }
-    return false;
-  }
-  // Try immediately, then poll up to 2s
-  if(!tryFillBox()){
-    let tries = 0;
-    const maxTries = 20;
-    const interval = setInterval(()=>{
-      if(tryFillBox() || ++tries > maxTries) clearInterval(interval);
-    }, 100);
-  }
-})();
-  </script>
 <body class="min-h-screen flex flex-col items-center justify-center px-2 py-8 bg-black">
   <main class="w-full max-w-xl glass p-6 flex flex-col gap-6">
     <header class="mb-2 text-center">
       <h1 class="text-3xl md:text-4xl font-bold text-cyan-300">Perfect Prompt Generator</h1>
       <p class="text-sm text-gray-300 mt-2">Auto-craft optimal ChatGPT prompts for any visual, app, or code tool.<br><span class="text-emerald-400">Mobile-first. Offline. No setup.</span></p>
     </header>
-    <!-- Options Form -->
+
     <form id="promptForm" class="flex flex-col gap-4" autocomplete="off">
-      <!-- 1. Project Type -->
       <label>
         <span class="font-semibold">What do you want to create?</span>
         <select class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200" id="projType" required>
@@ -99,12 +35,10 @@ window.addEventListener('DOMContentLoaded', () => {
           <option>Other (describe below)</option>
         </select>
       </label>
-      <!-- 2. Topic/Subject -->
       <label>
         <span class="font-semibold">Describe your topic/subject:</span>
         <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., AI Safety Lifecycle" maxlength="90" required>
       </label>
-      <!-- 3. Visual/Coding Style -->
       <label>
         <span class="font-semibold">Select preferred style:</span>
         <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200">
@@ -117,7 +51,6 @@ window.addEventListener('DOMContentLoaded', () => {
           <option>Other (specify below)</option>
         </select>
       </label>
-      <!-- 4. Output Stack -->
       <label>
         <span class="font-semibold">Choose coding stack:</span>
         <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200">
@@ -129,7 +62,6 @@ window.addEventListener('DOMContentLoaded', () => {
           <option>Other (describe below)</option>
         </select>
       </label>
-      <!-- 5. Output Format -->
       <label>
         <span class="font-semibold">Output format:</span>
         <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200">
@@ -139,35 +71,64 @@ window.addEventListener('DOMContentLoaded', () => {
           <option>ZIP-ready (multi-file)</option>
         </select>
       </label>
-      <!-- 6. Extras -->
       <label>
         <span class="font-semibold">Any extra features? (Optional)</span>
         <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Animation, IndexedDB, PWA, etc.">
       </label>
-      <!-- 7. Other (Freeform) -->
       <label>
         <span class="font-semibold">Other specific requests? (Optional)</span>
         <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie SVG, accessibility, export features">
       </label>
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" id="includeBranding" checked class="checkbox-emerald">
+        Include Shroomtop420™ branding in the prompt
+      </label>
       <button type="submit" class="w-full py-2 mt-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all">Generate Prompt</button>
     </form>
-    <!-- Output Section -->
+
     <section>
       <label class="font-semibold text-lg text-emerald-400">Generated Prompt:</label>
       <div id="promptOut" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[130px] text-base shadow-inner border border-gray-800"></div>
       <button id="copyBtn" class="btn-copy mt-2 px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold">Copy Prompt</button>
+      <p class="text-xs text-gray-500 mt-2 text-center">
+        Prompt crafted with ❤️ by <a href="https://www.shroomtop420.com" target="_blank" class="underline text-emerald-400">Shroomtop420™</a>
+      </p>
     </section>
+
     <footer class="text-xs text-gray-500 text-center pt-4">
-      &copy; 2025 Shroomtop420™ | Fully offline | <a href="https://www.shroomtop420.com/" class="underline text-cyan-400">Site</a>
+      &copy; 2025 Shroomtop420™ | Fully offline | <a href="https://www.shroomtop420.com/" target="_blank" class="underline text-cyan-400">Site</a>
     </footer>
   </main>
+
   <script>
-    // Generate Prompt Logic
+    // Smart autofill based on URL hash
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
+      const boxes = [
+        document.querySelector('input[placeholder*="topic"]'),
+        document.querySelector('input[placeholder*="subject"]'),
+        document.querySelector('input[name="topic"]'),
+        document.querySelector('#topic'),
+        document.querySelector('#subject'),
+        document.querySelectorAll('input')[1],
+      ];
+      for (const box of boxes) {
+        if (box && hash && (!box.value || box.value.startsWith("e.g."))) {
+          box.value = hash;
+          box.dispatchEvent(new Event('input', { bubbles: true }));
+          break;
+        }
+      }
+      if (boxes[0]) boxes[0].focus();
+    });
+
+    // Prompt Generator
     const form = document.getElementById('promptForm');
     const out = document.getElementById('promptOut');
     const copyBtn = document.getElementById('copyBtn');
+
     function genPrompt(d) {
-      return `Create a ${d.projType} about "${d.topic}" using the following requirements:\n
+      const base = `Create a ${d.projType} about "${d.topic}" using the following requirements:\n
 • Visual/coding style: ${d.style}
 • Output stack: ${d.stack}
 • Output format: ${d.format}
@@ -181,7 +142,11 @@ ${d.other ? `• Special requests: ${d.other}` : ''}
 - Match this structure: [headline/subheadline][main diagram/feature][clean, centered, visually balanced]
 - Output as a markdown code block for easy copy-paste, unless otherwise specified.
 \nEnd with: “Ready to copy-paste and run.”`;
+
+      const branding = "\n\n(Prompt generated using the Shroomtop420™ Perfect Prompt Generator — https://www.shroomtop420.com)";
+      return base + (document.getElementById('includeBranding').checked ? branding : '');
     }
+
     form.onsubmit = e => {
       e.preventDefault();
       const d = {
@@ -197,6 +162,7 @@ ${d.other ? `• Special requests: ${d.other}` : ''}
       copyBtn.classList.remove('copied');
       copyBtn.textContent = 'Copy Prompt';
     };
+
     copyBtn.onclick = () => {
       navigator.clipboard.writeText(out.textContent)
         .then(() => {
