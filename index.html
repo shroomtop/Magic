@@ -15,6 +15,30 @@
     .btn-copy.copied { background: #16f5b4 !important; color: #18181b !important;}
   </style>
 </head>
+  <script>
+window.addEventListener('DOMContentLoaded', () => {
+  // Find the hash, decode, replace + with space for URL-compat.
+  const hash = decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
+  // Try every possible input for 'describe your topic/subject'
+  const boxes = [
+    document.querySelector('input[placeholder*="topic"]'),
+    document.querySelector('input[placeholder*="subject"]'),
+    document.querySelector('input[name="topic"]'),
+    document.querySelector('#topic'),
+    document.querySelector('#subject'),
+    document.querySelectorAll('input')[1], // fallback: 2nd input if order is always same
+  ];
+  for (const box of boxes) {
+    if (box && hash && (!box.value || box.value === "" || box.value.startsWith("e.g."))) {
+      box.value = hash;
+      box.dispatchEvent(new Event('input', { bubbles: true })); // trigger frameworks
+      break;
+    }
+  }
+  // Optional: scroll to or focus the box for user
+  if (boxes[0]) boxes[0].focus();
+});
+  </script>
 <body class="min-h-screen flex flex-col items-center justify-center px-2 py-8 bg-black">
   <main class="w-full max-w-xl glass p-6 flex flex-col gap-6">
     <header class="mb-2 text-center">
