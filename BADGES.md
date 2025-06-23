@@ -1,0 +1,6 @@
+[![GitHub release](https://img.shields.io/github/v/release/shroomtop/Magic?include_prereleases&sort=semver&style=flat-square)](https://github.com/shroomtop/Magic/releases)
+[![MIT License](https://img.shields.io/github/license/shroomtop/Magic?style=flat-square)](LICENSE)
+[![HTML5](https://img.shields.io/badge/HTML5-Offline-orange?logo=html5&logoColor=white&style=flat-square)](https://shroomtop.github.io/Magic/)
+[![PWA](https://img.shields.io/badge/PWA-Ready-blueviolet?style=flat-square)](https://shroomtop.github.io/Magic/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/shroomtop/Magic?style=flat-square)](https://github.com/shroomtop/Magic/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/shroomtop/Magic?style=flat-square)](https://github.com/shroomtop/Magic/issues)
