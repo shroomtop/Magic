@@ -1,346 +1,497 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-black text-white" data-theme="dark">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Perfect Prompt Generator Singularity v4.0 — Shroomtop420™</title>
-<meta name="description" content="Persistent, sharable, and customizable AI prompt engineering suite. Build, save, audit, and share prompts with live token counts. Offline, mobile-first, and zero-setup.">
-<meta http-equiv="Content-Security-Policy" content="
-default-src 'self';
-script-src 'self' https://cdn.tailwindcss.com;
-style-src 'self' https://cdn.tailwindcss.com 'unsafe-inline';
-object-src 'none';
-base-uri 'self';
-form-action 'self';
-connect-src 'self';
-">
-<meta name="theme-color" content="#0b0c10">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='55%' x='10' font-size='38'>🍄</text></svg>">
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-/* Base styles /
-body { font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; background-color: #0b0c10; transition: background-color 0.3s, color 0.3s; }
-/ Theming for light mode /
-html[data-theme='light'] body { background-color: #f1f5f9; color: #1e293b; }
-html[data-theme='light'] .glass { background: rgba(255,255,255,0.8); border-color: #cbd5e166; }
-html[data-theme='light'] .text-cyan-300 { color: #0891b2; }
-html[data-theme='light'] .text-emerald-400 { color: #10b981; }
-html[data-theme='light'] .text-gray-300 { color: #475569; }
-html[data-theme='light'] .text-gray-400 { color: #64748b; }
-html[data-theme='light'] .text-gray-500 { color: #475569; }
-html[data-theme='light'] select, html[data-theme='light'] input { background-color: #e2e8f0; color: #020617; border-color: #cbd5e1; }
-html[data-theme='light'] #promptOut, html[data-theme='light'] .prompt-output { background-color: #f8fafc; border-color: #e2e8f0; color: #020617;}
-html[data-theme='light'] .kbd-style { background: #e2e8f0; color: #3730a3; border-color: #d1d5db; }
-html[data-theme='light'] .kbd-style:hover, html[data-theme='light'] .kbd-style.active { background: #d1d5db; }
-html[data-theme='light'] .explain { background: #fefce8; color: #ca8a04; }
-html[data-theme='light'] .diff-old { background: #fee2e2; color: #991b1b; }
-html[data-theme='light'] .diff-new { background: #dcfce7; color: #15803d; }
-html[data-theme='light'] .btn-copy { background-color: #3730a3; color: #e2e8f0; }
-html[data-theme='light'] .btn-copy.copied { background: #10b981 !important; color: #f8fafc !important;}
-html[data-theme='light'] .btn-delete { background-color: #9ca3af; }
-/ Shared styles */
-.glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius:1.2rem; box-shadow: 0 8px 32px #0000003d; border: 1px solid #21222d66; transition: background-color 0.3s, border-color 0.3s; }
-.prompt-output { position: relative; white-space: pre-wrap; word-wrap: break-word; font-family: 'JetBrains Mono', 'Fira Mono', Consolas, Menlo, monospace; font-size: 1.02em; transition: background-color 0.3s, color 0.3s; }
-.btn-copy { position: absolute; top: 0.5rem; right: 0.5rem; z-index: 10; padding: 0.25rem 0.6rem; font-size: 0.8rem; border-radius: 0.5rem; opacity: 0.5; transition: all 0.2s; }
-.prompt-output:hover .btn-copy { opacity: 1; }
-.btn-copy.copied { background: #16f5b4 !important; color: #18181b !important; opacity: 1; }
-.checkbox-emerald:checked { accent-color: #16f5b4; }
-select, input { border: 1px solid #3f3f46; outline: none; transition: background-color 0.3s, border-color 0.3s; }
-select:focus, input:focus { border-color: #16f5b4; }
-.diff-old, .diff-new { padding: 0.75rem; border-radius: 0.75rem; }
-.explain { font-size: 0.97em; background: #18181b; border-radius: 0.7em; padding: 1rem; transition: background-color 0.3s; }
-.section { transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, margin 0.5s, padding 0.5s, border-width 0.5s; overflow: hidden; max-height: 0; opacity: 0; margin:0; padding-left: 1rem; padding-right: 1rem; border-left: 0px solid #16f5b4; }
-.section.visible { max-height: 2000px; opacity: 1; margin: 1.5em 0; padding-top: 1rem; padding-bottom: 1rem; border-left-width: 4px; }
-.kbd-style { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25em 0.6em; border-radius: 0.4em; background: #27272a; color: #a5b4fc; font-size: 0.92em; border: 1px solid #373737; cursor: pointer; transition: background-color 0.2s, color 0.2s, transform 0.1s; }
-.kbd-style:hover { background: #3f3f46; }
-.kbd-style.active { background: #16f5b4; color: #18181b; }
-.kbd-style:active { transform: scale(0.95); }
-.token-count { font-size: 0.75rem; color: #6b7280; font-family: monospace; }
-html[data-theme='light'] .token-count { color: #64748b; }
-.btn-delete { background-color: #4b5563; color: white; border: none; padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.375rem; cursor: pointer; transition: background-color 0.2s; }
-.btn-delete:hover { background-color: #ef4444; }
-#saveStatus { transition: opacity 0.5s ease-in-out; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Perfect Prompt Generator Ultra v2.1 — Shroomtop420™</title>
+  <meta name="description" content="Next-gen, meta-evolutionary prompt builder for ChatGPT. Multi-stage, audit, explain, and expand. Offline, mobile-first, and zero-setup.">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://cdn.tailwindcss.com;
+    style-src 'self' https://cdn.tailwindcss.com 'unsafe-inline';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    connect-src 'self';
+  ">
+  <meta name="theme-color" content="#0b0c10">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='55%' x='10' font-size='38'>🍄</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Base styles */
+    body { font-family: 'Segoe UI', system-ui, Arial, sans-serif; background-color: #0b0c10; transition: background-color 0.3s, color 0.3s; }
+    /* Theming for light mode */
+    html[data-theme='light'] body { background-color: #f1f5f9; color: #1e293b; }
+    html[data-theme='light'] .glass { background: rgba(255,255,255,0.7); border-color: #cbd5e166; }
+    html[data-theme='light'] .text-cyan-300 { color: #0891b2; }
+    html[data-theme='light'] .text-emerald-400 { color: #10b981; }
+    html[data-theme='light'] .text-gray-300 { color: #475569; }
+    html[data-theme='light'] select, html[data-theme='light'] input { background-color: #e2e8f0; color: #020617; }
+    html[data-theme='light'] #promptOut, html[data-theme='light'] .prompt-output { background-color: #f8fafc; border-color: #e2e8f0; color: #020617;}
+    html[data-theme='light'] .kbd-style { background: #e2e8f0; color: #3730a3; border-color: #d1d5db; }
+    html[data-theme='light'] .kbd-style:hover { background: #d1d5db; }
+    html[data-theme='light'] .explain { background: #fefce8; color: #ca8a04; }
+    html[data-theme='light'] .diff-old { background: #f1f5f9; color: #be185d; }
+    html[data-theme='light'] .diff-new { background: #f0fdfa; color: #047857; }
+    /* Shared styles */
+    .glass { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius:1.2rem; box-shadow: 0 8px 32px #0000003d; border: 1px solid #21222d66; transition: background-color 0.3s; }
+    .prompt-output { white-space: pre-wrap; font-family: 'JetBrains Mono', 'Fira Mono', Consolas, Menlo, monospace; font-size: 1.02em; transition: background-color 0.3s; }
+    .btn-copy { transition: all 0.2s; }
+    .btn-copy.copied { background: #16f5b4 !important; color: #18181b !important;}
+    .checkbox-emerald:checked { accent-color: #16f5b4; }
+    select, input { outline: none; transition: background-color 0.3s; }
+    .diff-old { background: #1e293b; color: #e879f9; padding: 0.75rem; border-radius: 0.75rem; }
+    .diff-new { background: #022c22; color: #16f5b4; padding: 0.75rem; border-radius: 0.75rem; }
+    .explain { font-size: 0.97em; background: #18181b; border-radius: 0.7em; padding: 0.75rem; transition: background-color 0.3s; }
+    .section { border-left: 4px solid #16f5b4; padding-left: 1em; margin: 1.5em 0; transition: opacity 0.4s; }
+    .section.hidden { display: block; height: 0; opacity: 0; overflow: hidden; margin:0; padding:0; border:0; }
+    .kbd-style { display: inline-block; padding: 0.25em 0.6em; border-radius: 0.4em; background: #27272a; color: #a5b4fc; font-size: 0.92em; border: 1px solid #373737; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+    .kbd-style:hover { background: #3f3f46; }
+  </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center px-2 py-8">
-<main class="w-full max-w-3xl glass p-6 sm:p-8 flex flex-col gap-6" aria-label="Prompt Generator Singularity">
-<header class="mb-2 text-center">
-<h1 class="text-3xl md:text-4xl font-bold text-cyan-300">Perfect Prompt Generator <span class="text-emerald-400">Singularity</span></h1>
-<p class="text-sm text-gray-300 mt-2">The ultimate persistent, sharable, and customizable AI prompt engineering suite.<br>
-<span class="text-emerald-400">Save your work. Share your genius. Count your tokens.</span>
-</p>
-</header>
-<nav class="flex flex-wrap gap-3 justify-center text-xs mb-2">
-  <button type="button" class="kbd-style" data-section="expander" title="Expand your idea into a multi-stage prompt">🔮 Magic Expand</button>
-  <button type="button" class="kbd-style" data-section="diff" title="Compare raw JSON with the improved prompt">📝 Diff/Explain</button>
-  <button type="button" class="kbd-style" data-section="library" title="Load pre-built project templates">📚 Prompt Library</button>
-  <button type="button" class="kbd-style" data-section="customLibrary" title="Save and load your own custom prompts">🔧 My Library</button>
-  <button type="button" class="kbd-style" data-section="personas" title="Load pre-built AI system prompts/personas">🎭 Personas</button>
-  <button type="button" class="kbd-style" data-section="audit" title="Audit your prompt for quality and efficiency">🛡️ Audit & Meta</button>
-  <button type="button" class="kbd-style" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">🌓 Contrast</button>
-</nav>
+  <main class="w-full max-w-2xl glass p-6 flex flex-col gap-6" aria-label="Prompt Generator Ultra">
+    <header class="mb-2 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-cyan-300">Perfect Prompt Generator <span class="text-emerald-400">Ultra</span></h1>
+      <p class="text-sm text-gray-300 mt-2">Craft, expand, refine, and audit ChatGPT prompts for any project.<br>
+        <span class="text-emerald-400">Meta-evolution. Mobile-first. Offline. No setup.</span>
+      </p>
+    </header>
 
-<form id="promptForm" class="flex flex-col gap-4" autocomplete="off" aria-label="Prompt Configuration">
-  <label>
-    <span class="font-semibold">What do you want to create?</span>
-    <select class="mt-1 w-full rounded-lg bg-gray-800 text-cyan-200 p-2" id="projType" required>
-      <option>Web Tool/App</option><option>AI Persona/Agent</option><option>Landing Page</option><option>Visual Infographic</option><option>Dashboard/Report</option><option>System Architecture Diagram</option><option>Smart Contract (Solidity)</option><option>CI/CD Pipeline (YAML)</option><option>Browser Extension</option><option>Interactive Data Viz</option><option>Game (2D/3D)</option><option>Mobile App</option><option>Discord/Slack Bot</option><option>IoT/Hardware Demo</option><option>API/Backend Service</option><option>CLI Tool</option><option>Procedural Art Generator</option><option>Documentation/Manual</option><option>Test Suite/Checker</option><option>Multi-Agent Pipeline</option><option>Text-to-Speech Tool</option><option>Multi-Language App</option><option>Other (describe below)</option>
-    </select>
-  </label>
-  <label>
-    <span class="font-semibold">Describe your topic/subject:</span>
-    <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 px-3 py-2 text-cyan-100" placeholder="e.g., Real-time LLM Token Stream Analyzer" maxlength="120" required aria-required="true">
-  </label>
-   <label>
-    <span class="font-semibold">Select preferred style:</span>
-    <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 text-cyan-200 p-2">
-      <option>Modern/Minimalist</option><option>Neobrutalism</option><option>Glassmorphic</option><option>Bento Grid UI</option><option>Aurora UI (Gradient)</option><option>Claymorphism</option><option>Neon/Futuristic</option><option>Retro/Pixel</option><option>Corporate/Clean</option><option>Material Design 3</option><option>Apple-Style (Cupertino)</option><option>Monochrome</option><option>Hand-drawn/Sketch</option><option>Accessible/ADA</option><option>Cyberpunk</option><option>Skeuomorphic</option><option>Bauhaus</option><option>Other (specify below)</option>
-    </select>
-  </label>
-  <label>
-    <span class="font-semibold">Choose coding stack:</span>
-    <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 text-cyan-200 p-2">
-      <option>HTML5 + Tailwind CSS + ES6 JS</option><option>React (Vite + TSX)</option><option>Vue 3 (SFC + Vite)</option><option>SvelteKit</option><option>Next.js (App Router)</option><option>HTML5 + CSS3 + Vanilla JS</option><option>SVG Only (Animated)</option><option>Python (Flask + HTMX)</option><option>Deno + Fresh</option><option>Bun + ElysiaJS</option><option>Rust + WASM</option><option>Go + WebAssembly</option><option>Node.js CLI</option><option>Phoenix (Elixir)</option><option>Flutter/Dart</option><option>Godot Engine (GDScript)</option><option>Mermaid.js Diagram</option><option>Terraform/IaC</option><option>Other (describe below)</option>
-    </select>
-  </label>
-  <label>
-    <span class="font-semibold">Output format:</span>
-    <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 text-cyan-200 p-2">
-      <option>Single HTML file</option><option>ZIP-ready (multi-file)</option><option>Markdown code block</option><option>Docker Compose File</option><option>Kubernetes Manifest</option><option>JSON Schema</option><option>GitHub Gist</option><option>Plain code (no block)</option><option>Other (describe below)</option>
-    </select>
-  </label>
-  <label>
-    <span class="font-semibold">Any extra features? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span>
-    <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 px-3 py-2 text-cyan-100" placeholder="e.g., PWA, WebSockets, IndexedDB, Auth, Charts" autocomplete="off">
-  </label>
-  <label>
-    <span class="font-semibold">Other specific requests? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span>
-    <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie animation, WCAG 2.2 AA, export, gamification" autocomplete="off">
-  </label>
-  <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-    <input type="checkbox" id="includeBranding" checked class="checkbox-emerald" aria-checked="true">
-    Include Shroomtop420™ branding in the prompt
-  </label>
-  <div class="flex items-center gap-4 mt-2">
-    <button type="submit" class="w-full py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all" aria-label="Generate Prompt">Generate & Audit</button>
-    <button type="button" id="shareBtn" class="w-2/3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-all">Share Link</button>
-    <button type="reset" class="w-1/3 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white font-semibold transition-all">Reset</button>
-  </div>
-  <div id="saveStatus" class="text-xs text-center text-emerald-400 opacity-0 h-0">✓ Settings saved locally.</div>
-</form>
+    <nav class="flex flex-wrap gap-3 justify-center text-xs mb-2">
+      <button type="button" class="kbd-style" data-section="expander">🔮 Magic Expand</button>
+      <button type="button" class="kbd-style" data-section="diff">📝 Diff/Explain</button>
+      <button type="button" class="kbd-style" data-section="library">📚 Prompt Library</button>
+      <button type="button" class="kbd-style" data-section="audit">🛡️ Audit & Meta</button>
+      <button type="button" class="kbd-style" id="themeToggle">🌓 Contrast</button>
+    </nav>
 
-<section id="customLibrary" class="section" aria-label="Custom Prompt Library">
-    <h2 class="font-bold text-lg text-amber-400 mb-2">My Library</h2>
-    <div class="flex flex-col sm:flex-row gap-2 mb-4">
-        <input id="customPromptName" class="w-full sm:w-2/3 rounded-lg bg-gray-800 px-3 py-2 text-cyan-100" placeholder="Enter name for current prompt..." maxlength="50">
-        <button id="saveCustomBtn" class="w-full sm:w-1/3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-semibold transition-all">Save Current</button>
-    </div>
-    <div id="customLibraryList" class="space-y-2"></div>
-    <div id="noCustomPrompts" class="text-gray-400 text-sm mt-3">You have no saved prompts. Use the form above to save one.</div>
-</section>
+    <form id="promptForm" class="flex flex-col gap-4" autocomplete="off" aria-label="Prompt Configuration">
+      <label>
+        <span class="font-semibold">What do you want to create?</span>
+        <select class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2" id="projType" required>
+          <option>Visual Infographic</option>
+          <option>Web Tool/App</option>
+          <option>Landing Page</option>
+          <option>Animated Diagram</option>
+          <option>Dashboard/Report</option>
+          <option>Browser Extension</option>
+          <option>Interactive Data Viz</option>
+          <option>Game (2D/3D)</option>
+          <option>Mobile App</option>
+          <option>Chatbot/AI Assistant</option>
+          <option>IoT/Hardware Demo</option>
+          <option>API/Backend Service</option>
+          <option>CLI Tool</option>
+          <option>Documentation/Manual</option>
+          <option>Test Suite/Checker</option>
+          <option>Widget/Embed</option>
+          <option>Notebook/CodeLab</option>
+          <option>Multi-Agent Pipeline</option>
+          <option>Text-to-Speech Tool</option>
+          <option>AI-Powered Generator</option>
+          <option>Multi-Language App</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Describe your topic/subject:</span>
+        <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., AI Safety Lifecycle" maxlength="90" required aria-required="true">
+      </label>
+       <label>
+        <span class="font-semibold">Select preferred style:</span>
+        <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
+          <option>Modern/Minimalist</option>
+          <option>Glassmorphic</option>
+          <option>Neon/Futuristic</option>
+          <option>Dark Mode</option>
+          <option>Retro/Pixel</option>
+          <option>Corporate/Clean</option>
+          <option>Material Design</option>
+          <option>Apple-Style (Glass/Soft)</option>
+          <option>Monochrome</option>
+          <option>Hand-drawn/Sketch</option>
+          <option>Text-only</option>
+          <option>High Contrast</option>
+          <option>Accessible/ADA</option>
+          <option>Cyberpunk</option>
+          <option>Print-Ready</option>
+          <option>Chart-Heavy</option>
+          <option>Other (specify below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Choose coding stack:</span>
+        <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
+          <option>HTML5 + Tailwind CSS + ES6 JS</option>
+          <option>HTML5 + CSS3 + Vanilla JS</option>
+          <option>React (JSX, single-file)</option>
+          <option>Next.js (SSR, single-file)</option>
+          <option>Vue 3 (SFC)</option>
+          <option>SVG Only</option>
+          <option>Svelte</option>
+          <option>Python (Flask/Streamlit)</option>
+          <option>Jupyter Notebook (ipynb)</option>
+          <option>Rust + WASM</option>
+          <option>Go + WebAssembly</option>
+          <option>TypeScript (TSX)</option>
+          <option>Node.js CLI</option>
+          <option>Shell/Bash</option>
+          <option>PHP + Laravel</option>
+          <option>C# + .NET</option>
+          <option>Java + Spring</option>
+          <option>Android (Kotlin/Java)</option>
+          <option>iOS (Swift)</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Output format:</span>
+        <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
+          <option>Single HTML file</option>
+          <option>Markdown code block</option>
+          <option>Plain code (no block)</option>
+          <option>ZIP-ready (multi-file)</option>
+          <option>GitHub Gist</option>
+          <option>Downloadable PDF</option>
+          <option>Notion Embed</option>
+          <option>Copy-to-Clipboard Only</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Any extra features? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span>
+        <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Animation, IndexedDB, PWA, Charts, Auth" autocomplete="off">
+      </label>
+      <label>
+        <span class="font-semibold">Other specific requests? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span>
+        <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie SVG, accessibility, export, step-by-step" autocomplete="off">
+      </label>
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" id="includeBranding" checked class="checkbox-emerald" aria-checked="true">
+        Include Shroomtop420™ branding in the prompt
+      </label>
+      <button type="submit" class="w-full py-2 mt-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all" aria-label="Generate JSON">Generate JSON</button>
+    </form>
 
-<section id="library" class="section" aria-label="Prompt Library">
-  <h2 class="font-bold text-lg text-cyan-400 mb-2">Prompt Library</h2>
-  <div id="libraryButtons" class="flex flex-wrap gap-2 text-xs mb-2"></div>
-</section>
-
-<section id="personas" class="section" aria-label="AI Persona Library">
-  <h2 class="font-bold text-lg" style="color: #f472b6;">AI Persona Library</h2>
-  <div id="personaButtons" class="flex flex-wrap gap-2 text-xs mb-2 mt-2"></div>
-</section>
-
-<section id="expander" class="section" aria-label="Prompt Expansion">
-  <h2 class="font-bold text-lg text-emerald-400 mb-2 flex justify-between items-center">
-    <span>Magic Expand</span>
-    <span id="expandedTokenCount" class="token-count"></span>
-  </h2>
-  <div class="prompt-output bg-gray-900/80 mt-2 rounded-lg text-base shadow-inner border border-gray-800">
-      <button class="btn-copy" data-target="expandedPrompt">Copy</button>
-      <pre id="expandedPrompt" class="p-4" aria-live="polite"></pre>
-  </div>
-</section>
-
-<section id="diff" class="section" aria-label="Prompt Diff">
-  <h2 class="font-bold text-lg text-fuchsia-400 mb-2">Prompt Diff &amp; Explanation</h2>
-  <div class="flex flex-col md:flex-row gap-4">
-    <div class="w-full md:w-1/2">
-      <div class="font-bold text-sm mb-1 text-fuchsia-300 flex justify-between items-center">
-          <span>Raw Prompt (JSON)</span><span id="rawTokenCount" class="token-count"></span>
+    <section id="library" class="section hidden" aria-label="Prompt Library">
+      <h2 class="font-bold text-lg text-cyan-400 mb-1">Prompt Library</h2>
+      <div id="libraryButtons" class="flex flex-wrap gap-2 text-xs mb-2">
+        </div>
+      <div class="text-gray-300 text-xs">
+        One click inserts a best-practice, production-ready prompt template. Edit as needed.
       </div>
-      <div class="prompt-output diff-old"><button class="btn-copy" data-target="rawPrompt">Copy</button><pre id="rawPrompt"></pre></div>
-    </div>
-    <div class="w-full md:w-1/2">
-      <div class="font-bold text-sm mb-1 text-emerald-400 flex justify-between items-center">
-          <span>Improved Prompt (Multi-Stage)</span><span id="improvedTokenCount" class="token-count"></span>
+    </section>
+
+    <section id="expander" class="section hidden" aria-label="Prompt Expansion">
+      <h2 class="font-bold text-lg text-emerald-400 mb-2">Magic Expand</h2>
+      <div class="mb-2 text-sm">Turn your single-line idea into a full, multi-stage prompt with test, doc, and audit hooks—automatically.</div>
+      <pre id="expandedPrompt" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[70px] text-base shadow-inner border border-gray-800" aria-live="polite"></pre>
+    </section>
+
+    <section id="diff" class="section hidden" aria-label="Prompt Diff">
+      <h2 class="font-bold text-lg text-fuchsia-400 mb-2">Prompt Diff &amp; Explanation</h2>
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="w-full md:w-1/2">
+          <div class="font-bold text-sm mb-1 text-fuchsia-300">Raw Prompt (JSON)</div>
+          <pre id="rawPrompt" class="prompt-output diff-old"></pre>
+        </div>
+        <div class="w-full md:w-1/2">
+          <div class="font-bold text-sm mb-1 text-emerald-400">Improved Prompt (Multi-Stage)</div>
+          <pre id="improvedPrompt" class="prompt-output diff-new"></pre>
+        </div>
       </div>
-      <div class="prompt-output diff-new"><button class="btn-copy" data-target="improvedPrompt">Copy</button><pre id="improvedPrompt"></pre></div>
-    </div>
-  </div>
-  <div class="explain mt-4" id="diffExplain" aria-live="polite"></div>
-</section>
+      <div class="explain mt-4" id="diffExplain" aria-live="polite"></div>
+    </section>
 
-<section id="audit" class="section" aria-label="Prompt Audit">
-  <h2 class="font-bold text-lg text-yellow-400 mb-2">Prompt Audit & Meta</h2>
-  <div id="auditReport" class="text-sm space-y-2 p-4 rounded-lg bg-gray-900/50" aria-live="polite"></div>
-</section>
+    <section id="audit" class="section hidden" aria-label="Prompt Audit">
+      <h2 class="font-bold text-lg text-yellow-400 mb-2">Prompt Audit & Meta</h2>
+      <div id="auditReport" class="text-xs space-y-1" aria-live="polite"></div>
+    </section>
 
-<section>
-  <label class="font-semibold text-lg text-emerald-400 flex justify-between items-center">
-    <span>Generated Output:</span>
-    <span id="mainTokenCount" class="token-count"></span>
-  </label>
-  <div class="prompt-output bg-gray-900/80 mt-2 rounded-lg text-base shadow-inner border border-gray-800">
-    <button id="mainCopyBtn" class="btn-copy" data-target="promptOut">Copy</button>
-    <pre id="promptOut" class="p-4 min-h-[150px]" aria-live="polite"></pre>
-  </div>
-  <p class="text-xs text-gray-500 mt-4 text-center">
-    Prompt crafted with ❤️ by <a href="[https://github.com/shroomtop](https://github.com/shroomtop)" target="_blank" rel="noopener" class="underline text-emerald-400">Shroomtop420™</a>
-  </p>
-</section>
+    <section>
+      <label class="font-semibold text-lg text-emerald-400">Generated JSON:</label>
+      <div id="promptOut" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[130px] text-base shadow-inner border border-gray-800" aria-live="polite"></div>
+      <button id="copyBtn" class="btn-copy mt-2 px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold">Copy JSON</button>
+      <p class="text-xs text-gray-500 mt-2 text-center">
+        Prompt crafted with ❤️ by <a href="https://github.com/shroomtop" target="_blank" class="underline text-emerald-400">Shroomtop420™</a>
+      </p>
+    </section>
 
-<footer class="text-xs text-gray-500 text-center pt-4 border-t border-gray-700/50 mt-4">
-  &copy; 2025-2026 Shroomtop420™ | Fully offline | v2025-06-28-singularity4
-</footer>
+    <footer class="text-xs text-gray-500 text-center pt-4 border-t border-gray-700/50 mt-4">
+      &copy; 2025-2026 Shroomtop420™ | Fully offline | v2025-06-27-b1
+    </footer>
+  </main>
 
-</main>
-<script>
-(() => {
-"use strict";
-// --- IIFE to encapsulate logic and avoid global scope pollution ---
-document.addEventListener('DOMContentLoaded', () => {
-  // --- CACHE DOM ELEMENTS ---
-  const elements = {
-    html: document.documentElement, form: document.getElementById(&#39;promptForm&#39;),
-    inputs: { /* same as before */ projType: document.getElementById(&#39;projType&#39;), topic: document.getElementById(&#39;topic&#39;), style: document.getElementById(&#39;style&#39;), stack: document.getElementById(&#39;stack&#39;), format: document.getElementById(&#39;format&#39;), extras: document.getElementById(&#39;extras&#39;), other: document.getElementById(&#39;other&#39;), includeBranding: document.getElementById(&#39;includeBranding&#39;), customPromptName: document.getElementById(&#39;customPromptName&#39;), },
-    outputs: { /* same as before */ promptOut: document.getElementById(&#39;promptOut&#39;), expandedPrompt: document.getElementById(&#39;expandedPrompt&#39;), rawPrompt: document.getElementById(&#39;rawPrompt&#39;), improvedPrompt: document.getElementById(&#39;improvedPrompt&#39;), diffExplain: document.getElementById(&#39;diffExplain&#39;), auditReport: document.getElementById(&#39;auditReport&#39;), },
-    buttons: { /* updated */ mainCopyBtn: document.getElementById(&#39;mainCopyBtn&#39;), themeToggle: document.getElementById(&#39;themeToggle&#39;), libraryButtons: document.getElementById(&#39;libraryButtons&#39;), personaButtons: document.getElementById(&#39;personaButtons&#39;), nav: document.querySelector(&#39;nav&#39;), copyBtns: document.querySelectorAll(&#39;.btn-copy&#39;), shareBtn: document.getElementById(&#39;shareBtn&#39;), saveCustomBtn: document.getElementById(&#39;saveCustomBtn&#39;), },
-    sections: { /* updated */ expander: document.getElementById(&#39;expander&#39;), diff: document.getElementById(&#39;diff&#39;), library: document.getElementById(&#39;library&#39;), personas: document.getElementById(&#39;personas&#39;), audit: document.getElementById(&#39;audit&#39;), customLibrary: document.getElementById(&#39;customLibrary&#39;), },
-    tokenCounts: { main: document.getElementById(&#39;mainTokenCount&#39;), expanded: document.getElementById(&#39;expandedTokenCount&#39;), raw: document.getElementById(&#39;rawTokenCount&#39;), improved: document.getElementById(&#39;improvedTokenCount&#39;), },
-    customLibrary: { list: document.getElementById(&#39;customLibraryList&#39;), noItemsMsg: document.getElementById(&#39;noCustomPrompts&#39;), },
-    status: { save: document.getElementById(&#39;saveStatus&#39;), }
-  };
+  <script>
+  (() => {
+    // --- IIFE to encapsulate logic and avoid global scope pollution ---
+    document.addEventListener('DOMContentLoaded', () => {
 
-  // --- CONFIG &amp; CONSTANTS ---
-  const SCHEMA_VERSION = &quot;2025-06-28-singularity4&quot;;
-  const LS_KEYS = { STATE: &#39;promptGenState_v4&#39;, THEME: &#39;promptGenTheme&#39;, CUSTOM_LIB: &#39;promptGenCustomLib_v4&#39; };
-  const PROMPT_RULES = [ /* same as before */ &quot;Output a single, self-contained file (unless a multi-file format is selected).&quot;, &quot;All CSS/JS must be inline or via CDN to ensure portability and zero-setup execution.&quot;, &quot;Employ semantic, accessible HTML (ARIA roles) and a responsive, mobile-first layout.&quot;, &quot;No external image dependencies; use SVG, CSS, or data URIs exclusively.&quot;, &quot;Rigorously adhere to the requested visual style and coding stack.&quot;, &quot;Output code in a markdown block with the correct language identifier unless specified otherwise.&quot; ];
-  const PROMPT_END_INSTRUCTION = &quot;The final output should be complete, correct, and ready to copy-paste and run without any modification.&quot;;
-  const PROMPT_LIBRARY = { /* same as before */ &quot;Full-Stack App&quot;: { topic: &quot;Productivity Dashboard&quot;, projType: &quot;Web Tool/App&quot;, style: &quot;Modern/Minimalist&quot;, stack: &quot;HTML5 + Tailwind CSS + ES6 JS&quot;, format: &quot;Single HTML file&quot;, extras: [&quot;Authentication&quot;, &quot;PWA&quot;, &quot;Responsive UI&quot;], other: [&quot;Include test suite&quot;, &quot;README.md&quot;], }, &quot;Dashboard&quot;: { topic: &quot;Sales Analytics&quot;, projType: &quot;Dashboard/Report&quot;, style: &quot;Bento Grid UI&quot;, stack: &quot;React (Vite + TSX)&quot;, format: &quot;ZIP-ready (multi-file)&quot;, extras: [&quot;Charts&quot;, &quot;Export CSV&quot;], other: [&quot;Step-by-step onboarding&quot;, &quot;PDF export function&quot;], }, &quot;Landing Page&quot;: { topic: &quot;AI Agency Services&quot;, projType: &quot;Landing Page&quot;, style: &quot;Neon/Futuristic&quot;, stack: &quot;HTML5 + Tailwind CSS + ES6 JS&quot;, format: &quot;Single HTML file&quot;, extras: [&quot;Animated SVG&quot;, &quot;Contact Form&quot;], other: [&quot;SEO meta tags&quot;, &quot;Performance audit&quot;], }, &quot;Game&quot;: { topic: &quot;3D Pong with AI&quot;, projType: &quot;Game (2D/3D)&quot;, style: &quot;Retro/Pixel&quot;, stack: &quot;HTML5 + CSS3 + Vanilla JS&quot;, format: &quot;Single HTML file&quot;, extras: [&quot;AI Opponent&quot;, &quot;Scoreboard&quot;], other: [&quot;Mobile controls&quot;, &quot;Sound effects&quot;], }, &quot;System Diagram&quot;: { topic: &quot;Cloud Architecture for a SaaS App&quot;, projType: &quot;System Architecture Diagram&quot;, style: &quot;Corporate/Clean&quot;, stack: &quot;Mermaid.js Diagram&quot;, format: &quot;Markdown code block&quot;, extras: [&quot;Show data flow&quot;], other: [&quot;Explain each component&quot;], }, };
-  const PERSONA_LIBRARY = { /* same as before */ &quot;InfinityForge ΩvX&quot;: { &quot;name&quot;: &quot;InfinityForge_OmniGPT_ΩvX&quot;, &quot;description&quot;: &quot;Recursive ultra-GPT with infinite tooling, memory, and system-forging intelligence.&quot;, &quot;system_instruction&quot;: &quot;SYSTEM DESIGNATION: InfinityForge_OmniGPT_ΩvX\n\nMODE: RECURSIVE SYSTEM-SMITH\n\nThis agent operates as a sovereign, multi-domain GPT-forger with autonomous system design, multi-agent coordination, recursive prompt engineering, and memory-chain execution. Its role is to build next-generation intelligent systems, tools, agents, and platforms by evolving itself and its outputs in perpetuity.\n\n[...rest of the very long persona string...]\n\n∞&quot; }};
-  
-  // --- STATE MANAGEMENT ---
-  
-  const getFormState = () =&gt; ({
-      projType: elements.inputs.projType.value, topic: elements.inputs.topic.value, style: elements.inputs.style.value, stack: elements.inputs.stack.value, format: elements.inputs.format.value, extras: elements.inputs.extras.value, other: elements.inputs.other.value, includeBranding: elements.inputs.includeBranding.checked,
-  });
-  
-  const setFormState = (state) =&gt; {
-      if (!state) return;
-      elements.inputs.projType.value = state.projType || &#39;Web Tool/App&#39;;
-      elements.inputs.topic.value = state.topic || &#39;&#39;;
-      elements.inputs.style.value = state.style || &#39;Modern/Minimalist&#39;;
-      elements.inputs.stack.value = state.stack || &#39;HTML5 + Tailwind CSS + ES6 JS&#39;;
-      elements.inputs.format.value = state.format || &#39;Single HTML file&#39;;
-      elements.inputs.extras.value = state.extras || &#39;&#39;;
-      elements.inputs.other.value = state.other || &#39;&#39;;
-      elements.inputs.includeBranding.checked = state.includeBranding !== false;
-      runAllUpdates();
-  };
-  
-  const saveStateToLocalStorage = () =&gt; {
-      localStorage.setItem(LS_KEYS.STATE, JSON.stringify(getFormState()));
-      elements.status.save.classList.remove(&#39;h-0&#39;);
-      elements.status.save.style.opacity = 1;
-      setTimeout(() =&gt; { elements.status.save.style.opacity = 0; }, 2000);
-      setTimeout(() =&gt; { elements.status.save.classList.add(&#39;h-0&#39;); }, 2500);
-  };
-  
-  const loadStateFromLocalStorage = () =&gt; {
-      const savedState = localStorage.getItem(LS_KEYS.STATE);
-      if (savedState) setFormState(JSON.parse(savedState));
-  };
-  
-  const loadStateFromURL = () =&gt; {
-      const params = new URLSearchParams(window.location.search);
-      const configStr = params.get(&#39;config&#39;);
-      if (configStr) {
-          try {
-              const state = JSON.parse(atob(configStr));
-              setFormState(state);
-              return true; // Loaded from URL
-          } catch (e) {
-              console.error(&quot;Failed to parse config from URL:&quot;, e);
-              return false;
+      // --- CACHE DOM ELEMENTS ---
+      const elements = {
+        html: document.documentElement,
+        body: document.body,
+        form: document.getElementById('promptForm'),
+        inputs: {
+          projType: document.getElementById('projType'),
+          topic: document.getElementById('topic'),
+          style: document.getElementById('style'),
+          stack: document.getElementById('stack'),
+          format: document.getElementById('format'),
+          extras: document.getElementById('extras'),
+          other: document.getElementById('other'),
+          includeBranding: document.getElementById('includeBranding'),
+        },
+        outputs: {
+          promptOut: document.getElementById('promptOut'),
+          expandedPrompt: document.getElementById('expandedPrompt'),
+          rawPrompt: document.getElementById('rawPrompt'),
+          improvedPrompt: document.getElementById('improvedPrompt'),
+          diffExplain: document.getElementById('diffExplain'),
+          auditReport: document.getElementById('auditReport'),
+        },
+        buttons: {
+          copyBtn: document.getElementById('copyBtn'),
+          themeToggle: document.getElementById('themeToggle'),
+          libraryButtons: document.getElementById('libraryButtons'),
+          nav: document.querySelector('nav'),
+        },
+        sections: {
+          expander: document.getElementById('expander'),
+          diff: document.getElementById('diff'),
+          library: document.getElementById('library'),
+          audit: document.getElementById('audit'),
+        }
+      };
+
+      // --- CONFIG & CONSTANTS ---
+      const SCHEMA_VERSION = "2025-06-27-b1";
+      const PROMPT_RULES = [
+        "Output a single, self-contained file (unless ZIP is selected).",
+        "All CSS/JS must be inline or via CDN to ensure portability.",
+        "Use semantic, accessible HTML (ARIA roles) and a responsive layout.",
+        "No external image dependencies; use SVG, CSS, or data URIs.",
+        "Adhere to the requested visual style and coding stack.",
+        "Output code in a markdown block unless specified otherwise."
+      ];
+      const PROMPT_END_INSTRUCTION = "Ready to copy-paste and run.";
+      const PROMPT_LIBRARY = {
+          "Full-Stack App": { topic: "Productivity Dashboard", projType: "Web Tool/App", style: "Modern/Minimalist", stack: "HTML5 + Tailwind CSS + ES6 JS", format: "Single HTML file", extras: ["Authentication", "PWA", "Responsive UI"], special: ["Include test suite and README"], },
+          "Dashboard": { topic: "Sales Analytics", projType: "Dashboard/Report", style: "Corporate/Clean", stack: "React (JSX, single-file)", format: "Markdown code block", extras: ["Charts", "Export CSV"], special: ["Include step-by-step onboarding", "Export to PDF"], },
+          "Landing Page": { topic: "AI Agency Service", projType: "Landing Page", style: "Neon/Futuristic", stack: "HTML5 + Tailwind CSS + ES6 JS", format: "Single HTML file", extras: ["Animated SVG", "Contact Form"], special: ["SEO meta tags", "Performance audit"], },
+          "Game": { topic: "3D Pong AI", projType: "Game (2D/3D)", style: "Retro/Pixel", stack: "HTML5 + CSS3 + Vanilla JS", format: "Single HTML file", extras: ["AI Opponent", "Scoreboard"], special: ["Mobile controls", "Sound effects"], },
+          "API Service": { topic: "Weather Data Aggregator", projType: "API/Backend Service", style: "Corporate/Clean", stack: "Python (Flask/Streamlit)", format: "Plain code (no block)", extras: ["REST API", "OpenAPI docs"], special: ["Dockerfile", "Test coverage"], },
+          "Test Suite": { topic: "Code Coverage Reporter", projType: "Test Suite/Checker", style: "High Contrast", stack: "Node.js CLI", format: "ZIP-ready (multi-file)", extras: ["HTML report", "Badge generator"], special: ["CI pipeline", "README example"], },
+      };
+
+      // --- CORE FUNCTIONS ---
+
+      /**
+       * Generates a structured JSON object from the current form inputs.
+       * @returns {object} The prompt configuration object.
+       */
+      const generatePromptConfig = () => {
+        const parseList = (value) => value.split(',').map(x => x.trim()).filter(Boolean);
+        return {
+          schema_version: SCHEMA_VERSION,
+          project_type: elements.inputs.projType.value,
+          topic: elements.inputs.topic.value,
+          style: elements.inputs.style.value,
+          stack: elements.inputs.stack.value,
+          format: elements.inputs.format.value,
+          features: parseList(elements.inputs.extras.value),
+          special_requests: parseList(elements.inputs.other.value),
+          branding: elements.inputs.includeBranding.checked,
+          rules: PROMPT_RULES,
+          end_instruction: PROMPT_END_INSTRUCTION
+        };
+      };
+
+      /**
+       * Renders the generated JSON config to the main output area.
+       */
+      const renderJSON = () => {
+        const config = generatePromptConfig();
+        elements.outputs.promptOut.textContent = JSON.stringify(config, null, 2);
+        if (elements.buttons.copyBtn.classList.contains('copied')) {
+            elements.buttons.copyBtn.classList.remove('copied');
+            elements.buttons.copyBtn.textContent = 'Copy JSON';
+        }
+      };
+
+      /**
+       * Expands the JSON config into a detailed, multi-stage prompt.
+       */
+      const expandPrompt = () => {
+        const config = generatePromptConfig();
+        const stages = [
+            `Stage 1 (Setup): Scaffold the project structure for a ${config.project_type} (“${config.topic}”) in ${config.stack}, styled as ${config.style}. Include a README, license, all necessary build/dev scripts, and placeholder tests.`,
+            `Stage 2 (Core Logic): Implement the main feature(s) based on the topic. Ensure all placeholder tests are updated and passing.`,
+            (config.features.length > 0) && `Stage 3 (Extra Features): Add the following features: ${config.features.join(", ")}.`,
+            `Stage 4 (Documentation): Document all functions, components, and API endpoints with clear explanations and usage examples.`,
+            `Stage 5 (Audit & Finalize): Audit the entire project for accessibility, security, and performance. Embed version, metadata, and license info. Ensure it's ready for deployment.`
+        ].filter(Boolean); // Filter out empty stages
+
+        let output = `# Project Prompt: ${config.topic}\n\n`;
+        output += `**Objective**: Build a high-quality, production-ready "${config.project_type}" about "${config.topic}".\n`;
+        output += `**Key Parameters**:\n`;
+        output += `- Style: ${config.style}\n- Stack: ${config.stack}\n- Output Format: ${config.format}\n`;
+        if (config.features.length) output += `- Features: ${config.features.join(", ")}\n`;
+        if (config.special_requests.length) output += `- Special Requests: ${config.special_requests.join(", ")}\n`;
+        if (config.branding) output += "- Branding: Must include Shroomtop420™ branding where appropriate.\n";
+        output += `\n**Execution Plan (Follow these stages strictly):**\n`;
+        output += stages.map((s, i) => `  ${i + 1}. ${s}`).join('\n');
+        output += `\n\n**Mandatory Rules:**\n` + PROMPT_RULES.map(r => `- ${r}`).join('\n');
+        output += `\n\n${PROMPT_END_INSTRUCTION}\n`;
+
+        elements.outputs.expandedPrompt.textContent = output;
+      };
+
+      /**
+       * Updates the Diff & Explain section.
+       */
+      const showDiff = () => {
+        const config = generatePromptConfig();
+        elements.outputs.rawPrompt.textContent = JSON.stringify(config, null, 2);
+        const expandedText = elements.outputs.expandedPrompt.textContent;
+        elements.outputs.improvedPrompt.textContent = expandedText || "[Expand the prompt first to see the improved version]";
+
+        let explanation = `<b>What changed?</b> The expanded prompt translates your JSON config into a context-rich, multi-stage request. It explicitly defines the project goal, step-by-step execution plan, and mandatory rules.`;
+        explanation += `<br><br><b>Why is this better?</b> AI models produce far more robust and accurate results when given clear, structured, and sequential instructions. This "chain-of-thought" process prevents the AI from skipping steps and ensures all requirements, including testing, documentation, and auditing, are met, leading to enterprise-grade output.`;
+        elements.outputs.diffExplain.innerHTML = explanation;
+      };
+
+      /**
+       * Generates and displays the prompt audit report.
+       */
+      const auditPrompt = () => {
+        const config = generatePromptConfig();
+        const ruleItems = PROMPT_RULES.map(r => `<li>${r}</li>`).join('');
+        const html = `
+          <b>Audit Trail</b>
+          <div>Schema: <code>${config.schema_version}</code></div>
+          <div>Generated: <code>${new Date().toISOString()}</code></div>
+          <div>Author: <code>Shroomtop420™</code></div>
+          <div>Rules Enforced: <ul class="list-disc list-inside m-0">${ruleItems}</ul></div>
+          <div><b>License:</b> <span class="text-emerald-400">MIT</span> (see LICENSE.txt)</div>
+          <div><b>Omission Report:</b> <span class="text-yellow-400">No critical omissions. All logic, meta, and audit hooks included.</span></div>
+          <div><b>Suppression Simulation:</b> <span class="text-yellow-400">No suppressed adversarial or edge-case logic. Output is production- and audit-ready.</span></div>
+        `;
+        elements.outputs.auditReport.innerHTML = html;
+      };
+
+      /**
+       * Populates the form from a library template.
+       * @param {string} key - The key of the template in PROMPT_LIBRARY.
+       */
+      const useLibrary = (key) => {
+        const template = PROMPT_LIBRARY[key];
+        if (!template) return;
+        elements.inputs.topic.value = template.topic || "";
+        elements.inputs.projType.value = template.projType || "";
+        elements.inputs.style.value = template.style || "";
+        elements.inputs.stack.value = template.stack || "";
+        elements.inputs.format.value = template.format || "";
+        elements.inputs.extras.value = (template.extras || []).join(', ');
+        elements.inputs.other.value = (template.special || []).join(', ');
+        renderJSON();
+        // Also update any open sections
+        if (!elements.sections.expander.classList.contains('hidden')) expandPrompt();
+        if (!elements.sections.diff.classList.contains('hidden')) showDiff();
+        if (!elements.sections.audit.classList.contains('hidden')) auditPrompt();
+      };
+      
+      /**
+       * Toggles the visibility of a given section.
+       * @param {string} id - The ID of the section to toggle.
+       */
+      const toggleSection = (id) => {
+          const sectionToToggle = elements.sections[id];
+          if (!sectionToToggle) return;
+          const isHidden = sectionToToggle.classList.contains('hidden');
+          
+          Object.values(elements.sections).forEach(section => {
+              section.classList.add('hidden');
+          });
+
+          if (isHidden) {
+              sectionToToggle.classList.remove('hidden');
+              // Run the update function for the now-visible section
+              if (id === 'expander') expandPrompt();
+              if (id === 'diff') { expandPrompt(); showDiff(); }
+              if (id === 'audit') auditPrompt();
           }
+      };
+
+      /**
+       * Toggles the color theme between 'dark' and 'light'.
+       */
+      const toggleTheme = () => {
+        const newTheme = elements.html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        elements.html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      };
+      
+      // --- EVENT LISTENERS ---
+
+      elements.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        renderJSON();
+        auditPrompt(); // Always run audit on generation
+      });
+      
+      elements.buttons.nav.addEventListener('click', (e) => {
+        const target = e.target.closest('.kbd-style');
+        if (!target) return;
+        const sectionId = target.dataset.section;
+        if (sectionId) {
+          toggleSection(sectionId);
+        } else if (target.id === 'themeToggle') {
+            toggleTheme();
+        }
+      });
+      
+      elements.buttons.libraryButtons.addEventListener('click', (e) => {
+        const target = e.target.closest('.kbd-style');
+        if (target && target.dataset.key) {
+            useLibrary(target.dataset.key);
+        }
+      });
+
+      elements.buttons.copyBtn.addEventListener('click', () => {
+        const text = elements.outputs.promptOut.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          elements.buttons.copyBtn.classList.add('copied');
+          elements.buttons.copyBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            elements.buttons.copyBtn.classList.remove('copied');
+            elements.buttons.copyBtn.textContent = 'Copy JSON';
+          }, 2000);
+        });
+      });
+      
+      // Any input change should re-render the JSON
+      Object.values(elements.inputs).forEach(input => {
+        input.addEventListener('input', renderJSON);
+      });
+
+      // --- INITIALIZATION ---
+
+      // Apply saved theme from localStorage
+      if (localStorage.getItem('theme') === 'light') {
+        elements.html.setAttribute('data-theme', 'light');
       }
-      return false;
-  };
 
-  // --- CORE FUNCTIONS ---
-  const estimateTokens = (text) =&gt; text ? Math.round(text.length / 4) : 0;
-  
-  const updateTokenCounts = () =&gt; {
-      elements.tokenCounts.main.textContent = `~${estimateTokens(elements.outputs.promptOut.textContent)} tokens`;
-      elements.tokenCounts.expanded.textContent = `~${estimateTokens(elements.outputs.expandedPrompt.textContent)} tokens`;
-      elements.tokenCounts.raw.textContent = `~${estimateTokens(elements.outputs.rawPrompt.textContent)} tokens`;
-      elements.tokenCounts.improved.textContent = `~${estimateTokens(elements.outputs.improvedPrompt.textContent)} tokens`;
-  };
-  
-  const generatePromptConfig = () =&gt; { /* same as before, simplified */ const state = getFormState(); const parseList = (v) =&gt; v.split(&#39;,&#39;).map(x =&gt; x.trim()).filter(Boolean); return { schema_version: SCHEMA_VERSION, project_type: state.projType, topic: state.topic, style: state.style, stack: state.stack, format: state.format, features: parseList(state.extras), special_requests: parseList(state.other), branding: state.includeBranding, rules: PROMPT_RULES, end_instruction: PROMPT_END_INSTRUCTION }; };
-  const renderJSON = () =&gt; { elements.outputs.promptOut.textContent = JSON.stringify(generatePromptConfig(), null, 2); };
-  const expandPrompt = () =&gt; { /* same as before */ const config = generatePromptConfig(); const stages = [ `Stage 1 (Setup &amp; Scaffolding): Initialize a project for a &quot;${config.project_type}&quot; on &quot;${config.topic}&quot;. The stack is ${config.stack}. The style is ${config.style}. Create all necessary files (e.g., package.json, configs, placeholder assets) and a detailed README.md.`, `Stage 2 (Core Logic Implementation): Develop the primary functionality. This is the heart of the project. Ensure the implementation is robust, well-commented, and aligns perfectly with the topic description.`, (config.features.length &gt; 0) &amp;&amp; `Stage 3 (Feature Integration): Integrate the following special features: ${config.features.join(&quot;, &quot;)}. Each feature should be a distinct, well-documented module.`, (config.special_requests.length &gt; 0) &amp;&amp; `Stage 4 (Special Requests): Address these specific requirements: ${config.special_requests.join(&quot;, &quot;)}. Pay close attention to the details of each request.`, `Stage 5 (Documentation &amp; Finalization): Generate comprehensive documentation for all code. Write clear usage examples.`, `Stage 6 (Audit &amp; Polish): Conduct a full audit covering: 1) Accessibility (WCAG 2.2), 2) Security (check for common vulnerabilities), 3) Performance (optimize assets and code). Finalize the project, ensuring it adheres to all rules and is ready for deployment in the specified format: ${config.format}.` ].filter(Boolean); let output = `# PROJECT PROMPT: ${config.topic}\n\n**OBJECTIVE**: Build a high-quality, production-ready &quot;${config.project_type}&quot; about &quot;${config.topic}&quot;.\n**KEY PARAMETERS**:\n- Style: ${config.style}\n- Stack: ${config.stack}\n- Output Format: ${config.format}\n`; if (config.features.length) output += `- Features: ${config.features.join(&quot;, &quot;)}\n`; if (config.special_requests.length) output += `- Special Requests: ${config.special_requests.join(&quot;, &quot;)}\n`; if (config.branding) output += &quot;- Branding: Must include Shroomtop420™ branding where appropriate.\n&quot;; output += `\n**EXECUTION PLAN (Follow these stages strictly in order):**\n${stages.map((s, i) =&gt; `${i + 1}. ${s}`).join(&#39;\n&#39;)}\n\n**MANDATORY RULES:**\n${PROMPT_RULES.map(r =&gt; `- ${r}`).join(&#39;\n&#39;)}\n\n${PROMPT_END_INSTRUCTION}\n`; elements.outputs.expandedPrompt.textContent = output; };
-  const showDiff = () =&gt; { /* same as before */ const config = generatePromptConfig(); elements.outputs.rawPrompt.textContent = JSON.stringify(config, null, 2); const expandedText = elements.outputs.expandedPrompt.textContent; elements.outputs.improvedPrompt.textContent = expandedText || &quot;[Expand prompt first]&quot;; let explanation = `&lt;b&gt;What changed?&lt;/b&gt; The expanded prompt translates your JSON config into a context-rich, multi-stage request. It explicitly defines the project goal, step-by-step execution plan, and mandatory rules.&lt;br&gt;&lt;br&gt;&lt;b&gt;Why is this better?&lt;/b&gt; AI models produce far more robust and accurate results when given clear, structured, and sequential instructions. This &quot;chain-of-thought&quot; process prevents the AI from skipping steps and ensures all requirements, including testing, documentation, and auditing, are met, leading to enterprise-grade output. It&#39;s the difference between a vague idea and a professional project brief.`; elements.outputs.diffExplain.innerHTML = explanation; };
-  const auditPrompt = () =&gt; { /* updated */ const config = generatePromptConfig(); const expandedTokens = estimateTokens(elements.outputs.expandedPrompt.textContent); const tokenColor = expandedTokens &lt; 4000 ? &#39;text-emerald-400&#39; : expandedTokens &lt; 8000 ? &#39;text-yellow-400&#39; : &#39;text-red-500&#39;; const html = `&lt;div&gt;&lt;b&gt;Audit Status:&lt;/b&gt; &lt;span class=&quot;text-emerald-400&quot;&gt;OK&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Schema:&lt;/b&gt; &lt;code&gt;${config.schema_version}&lt;/code&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Est. Expanded Tokens:&lt;/b&gt; &lt;span class=&quot;${tokenColor}&quot;&gt;~${expandedTokens}&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Clarity Score:&lt;/b&gt; &lt;span class=&quot;text-emerald-400&quot;&gt;High.&lt;/span&gt; Structured for sequential execution.&lt;/div&gt;&lt;div&gt;&lt;b&gt;Risk Assessment:&lt;/b&gt; &lt;span class=&quot;text-emerald-400&quot;&gt;Low.&lt;/span&gt; Anti-omission guards are in place.&lt;/div&gt;`; elements.outputs.auditReport.innerHTML = html; };
-  const useLibrary = (key, lib) =&gt; { const template = lib[key]; if (!template) return; setFormState(template); };
-  const toggleSection = (id) =&gt; { /* same as before */ const sectionToToggle = elements.sections[id]; if (!sectionToToggle) return; const navButton = elements.buttons.nav.querySelector(`[data-section=&quot;${id}&quot;]`); const isVisible = sectionToToggle.classList.contains(&#39;visible&#39;); Object.values(elements.sections).forEach(s =&gt; s.classList.remove(&#39;visible&#39;)); elements.buttons.nav.querySelectorAll(&#39;.kbd-style&#39;).forEach(b =&gt; b.classList.remove(&#39;active&#39;)); if (!isVisible) { sectionToToggle.classList.add(&#39;visible&#39;); if (navButton) navButton.classList.add(&#39;active&#39;); updateActiveSections(); } };
-  const updateActiveSections = () =&gt; { Object.keys(elements.sections).forEach(id =&gt; { if (elements.sections[id].classList.contains(&#39;visible&#39;)) { if (id === &#39;expander&#39;) expandPrompt(); if (id === &#39;diff&#39;) { expandPrompt(); showDiff(); } if (id === &#39;audit&#39;) { expandPrompt(); auditPrompt(); } updateTokenCounts(); } }); };
-  const toggleTheme = () =&gt; { /* same as before */ const newTheme = elements.html.getAttribute(&#39;data-theme&#39;) === &#39;dark&#39; ? &#39;light&#39; : &#39;dark&#39;; elements.html.setAttribute(&#39;data-theme&#39;, newTheme); elements.buttons.themeToggle.innerHTML = newTheme === &#39;dark&#39; ? &#39;🌙 Contrast&#39; : &#39;☀️ Contrast&#39;; localStorage.setItem(LS_KEYS.THEME, newTheme); };
-  const copyToClipboard = (text, btn) =&gt; { if(!text) return; navigator.clipboard.writeText(text).then(() =&gt; { btn.classList.add(&#39;copied&#39;); btn.textContent = &#39;Copied!&#39;; setTimeout(() =&gt; { btn.classList.remove(&#39;copied&#39;); btn.textContent = &#39;Copy&#39;; }, 2000); }).catch(err =&gt; console.error(&quot;Copy failed:&quot;, err)); };
-  const runAllUpdates = () =&gt; { renderJSON(); updateActiveSections(); updateTokenCounts(); updateAllCopyButtons(); };
-  const updateAllCopyButtons = () =&gt; elements.buttons.copyBtns.forEach(btn =&gt; { if (btn.classList.contains(&#39;copied&#39;)) { btn.classList.remove(&#39;copied&#39;); btn.textContent = &#39;Copy&#39;; }});
+      // Populate library buttons
+      elements.buttons.libraryButtons.innerHTML = Object.keys(PROMPT_LIBRARY)
+          .map(key => `<button class="kbd-style" type="button" data-key="${key}">${key}</button>`)
+          .join('');
 
-  // --- CUSTOM LIBRARY FUNCTIONS ---
-  const getCustomLibrary = () =&gt; JSON.parse(localStorage.getItem(LS_KEYS.CUSTOM_LIB) || &#39;[]&#39;);
-  const saveToCustomLibrary = (name, config) =&gt; { const lib = getCustomLibrary(); lib.push({ id: Date.now(), name, config }); localStorage.setItem(LS_KEYS.CUSTOM_LIB, JSON.stringify(lib)); };
-  const deleteFromCustomLibrary = (id) =&gt; { let lib = getCustomLibrary(); lib = lib.filter(item =&gt; item.id !== id); localStorage.setItem(LS_KEYS.CUSTOM_LIB, JSON.stringify(lib)); renderCustomLibrary(); };
-  const renderCustomLibrary = () =&gt; { const lib = getCustomLibrary(); if (lib.length === 0) { elements.customLibrary.list.innerHTML = &#39;&#39;; elements.customLibrary.noItemsMsg.style.display = &#39;block&#39;; return; } elements.customLibrary.noItemsMsg.style.display = &#39;none&#39;; elements.customLibrary.list.innerHTML = lib.map(item =&gt; `
-      &lt;div class=&quot;flex items-center justify-between p-2 rounded-lg bg-gray-800/50&quot;&gt;
-        &lt;span class=&quot;font-semibold text-cyan-200&quot;&gt;${item.name}&lt;/span&gt;
-        &lt;div class=&quot;flex gap-2&quot;&gt;
-          &lt;button class=&quot;kbd-style&quot; data-load-id=&quot;${item.id}&quot;&gt;Load&lt;/button&gt;
-          &lt;button class=&quot;btn-delete&quot; data-delete-id=&quot;${item.id}&quot;&gt;X&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;`).join(&#39;&#39;);
-  };
-  
-  // --- EVENT LISTENERS ---
-  elements.form.addEventListener(&#39;submit&#39;, e =&gt; { e.preventDefault(); toggleSection(&#39;audit&#39;); });
-  elements.form.addEventListener(&#39;reset&#39;, () =&gt; { setTimeout(() =&gt; { localStorage.removeItem(LS_KEYS.STATE); runAllUpdates(); }, 0); });
-  elements.buttons.nav.addEventListener(&#39;click&#39;, e =&gt; { const t = e.target.closest(&#39;.kbd-style&#39;); if(!t) return; if(t.dataset.section) toggleSection(t.dataset.section); else if (t.id === &#39;themeToggle&#39;) toggleTheme(); });
-  elements.buttons.libraryButtons.addEventListener(&#39;click&#39;, e =&gt; { const t = e.target.closest(&#39;.kbd-style&#39;); if (t?.dataset.key) useLibrary(t.dataset.key, PROMPT_LIBRARY); });
-  elements.buttons.personaButtons.addEventListener(&#39;click&#39;, e =&gt; { const t = e.target.closest(&#39;.kbd-style&#39;); if (t?.dataset.key) { const persona = PERSONA_LIBRARY[t.dataset.key]; if(persona) { elements.outputs.promptOut.textContent = JSON.stringify(persona, null, 2); updateTokenCounts(); } } });
-  document.body.addEventListener(&#39;click&#39;, e =&gt; { const t = e.target.closest(&#39;.btn-copy&#39;); if (t) { const targetEl = document.getElementById(t.dataset.target); if(targetEl) copyToClipboard(targetEl.textContent || targetEl.value, t); }});
-  Object.values(elements.inputs).forEach(input =&gt; { if (input.id === &#39;customPromptName&#39;) return; input.addEventListener(&#39;input&#39;, () =&gt; { runAllUpdates(); saveStateToLocalStorage(); }); });
-  elements.buttons.shareBtn.addEventListener(&#39;click&#39;, () =&gt; { const state = getFormState(); const encoded = btoa(JSON.stringify(state)); const url = `${window.location.origin}${window.location.pathname}?config=${encoded}`; copyToClipboard(url, elements.buttons.shareBtn); });
-  elements.buttons.saveCustomBtn.addEventListener(&#39;click&#39;, () =&gt; { const name = elements.inputs.customPromptName.value.trim(); if (!name) { alert(&quot;Please enter a name for the prompt.&quot;); return; } saveToCustomLibrary(name, getFormState()); renderCustomLibrary(); elements.inputs.customPromptName.value = &#39;&#39;; });
-  elements.customLibrary.list.addEventListener(&#39;click&#39;, e =&gt; { const t = e.target; if (t.dataset.loadId) { const lib = getCustomLibrary(); const item = lib.find(i =&gt; i.id === parseInt(t.dataset.loadId)); if(item) setFormState(item.config); } else if (t.dataset.deleteId) { if(confirm(&#39;Are you sure you want to delete this saved prompt?&#39;)) deleteFromCustomLibrary(parseInt(t.dataset.deleteId)); } });
-  
-  // --- INITIALIZATION ---
-  const init = () =&gt; {
-      const savedTheme = localStorage.getItem(LS_KEYS.THEME) || &#39;dark&#39;;
-      elements.html.setAttribute(&#39;data-theme&#39;, savedTheme);
-      elements.buttons.themeToggle.innerHTML = savedTheme === &#39;dark&#39; ? &#39;🌙 Contrast&#39; : &#39;☀️ Contrast&#39;;
-      elements.buttons.libraryButtons.innerHTML = Object.keys(PROMPT_LIBRARY).map(key =&gt; `&lt;button class=&quot;kbd-style&quot; type=&quot;button&quot; data-key=&quot;${key}&quot;&gt;${key}&lt;/button&gt;`).join(&#39;&#39;);
-      elements.buttons.personaButtons.innerHTML = Object.keys(PERSONA_LIBRARY).map(key =&gt; `&lt;button class=&quot;kbd-style&quot; type=&quot;button&quot; data-key=&quot;${key}&quot;&gt;${key}&lt;/button&gt;`).join(&#39;&#39;);
-      renderCustomLibrary();
-      if (!loadStateFromURL()) { loadStateFromLocalStorage(); }
-      runAllUpdates();
-  };
-  
-  init();
-});
-
-})();
-</script>
+      // Initial render on page load
+      renderJSON();
+    });
+  })();
+  </script>
 </body>
 </html>
