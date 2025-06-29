@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-black text-white" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Perfect Prompt Generator Ultra v2.1 — Shroomtop420™</title>
   <meta name="description" content="Next-gen, meta-evolutionary prompt builder for ChatGPT. Multi-stage, audit, explain, and expand. Offline, mobile-first, and zero-setup.">
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' https://cdn.tailwindcss.com;
-    style-src 'self' https://cdn.tailwindcss.com 'unsafe-inline';
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    connect-src 'self';
-  ">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; connect-src 'self';">
   <meta name="theme-color" content="#0b0c10">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='55%' x='10' font-size='38'>🍄</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'&gt;&lt;text y='55%' x='10' font-size='38'&gt;🍄&lt;/text&gt;&lt;/svg&gt;">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Base styles */
@@ -54,175 +46,267 @@
     <header class="mb-2 text-center">
       <h1 class="text-3xl md:text-4xl font-bold text-cyan-300">Perfect Prompt Generator <span class="text-emerald-400">Ultra</span></h1>
       <p class="text-sm text-gray-300 mt-2">Craft, expand, refine, and audit ChatGPT prompts for any project.<br>
-        <span class="text-emerald-400">Meta-evolution. Mobile-first. Offline. No setup.</span>
-      </p>
+      <span class="text-emerald-400">Meta-evolution. Mobile-first. Offline. No setup.</span></p>
     </header>
-
     <nav class="flex flex-wrap gap-3 justify-center text-xs mb-2">
-      <button type="button" class="kbd-style" data-section="expander">🔮 Magic Expand</button>
-      <button type="button" class="kbd-style" data-section="diff">📝 Diff/Explain</button>
-      <button type="button" class="kbd-style" data-section="library">📚 Prompt Library</button>
-      <button type="button" class="kbd-style" data-section="audit">🛡️ Audit & Meta</button>
-      <button type="button" class="kbd-style" id="themeToggle">🌓 Contrast</button>
+      <button type="button" class="kbd-style" data-section="expander">🔮 Magic Expand</button> <button type="button" class="kbd-style" data-section="diff">📝 Diff/Explain</button> <button type="button" class="kbd-style" data-section="library">📚 Prompt Library</button> <button type="button" class="kbd-style" data-section="audit">🛡️ Audit & Meta</button> <button type="button" class="kbd-style" id="themeToggle">🌓 Contrast</button>
     </nav>
-
-    <form id="promptForm" class="flex flex-col gap-4" autocomplete="off" aria-label="Prompt Configuration">
-      <label>
-        <span class="font-semibold">What do you want to create?</span>
-        <select class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2" id="projType" required>
-          <option>Visual Infographic</option>
-          <option>Web Tool/App</option>
-          <option>Landing Page</option>
-          <option>Animated Diagram</option>
-          <option>Dashboard/Report</option>
-          <option>Browser Extension</option>
-          <option>Interactive Data Viz</option>
-          <option>Game (2D/3D)</option>
-          <option>Mobile App</option>
-          <option>Chatbot/AI Assistant</option>
-          <option>IoT/Hardware Demo</option>
-          <option>API/Backend Service</option>
-          <option>CLI Tool</option>
-          <option>Documentation/Manual</option>
-          <option>Test Suite/Checker</option>
-          <option>Widget/Embed</option>
-          <option>Notebook/CodeLab</option>
-          <option>Multi-Agent Pipeline</option>
-          <option>Text-to-Speech Tool</option>
-          <option>AI-Powered Generator</option>
-          <option>Multi-Language App</option>
-          <option>Other (describe below)</option>
-        </select>
-      </label>
-      <label>
-        <span class="font-semibold">Describe your topic/subject:</span>
-        <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., AI Safety Lifecycle" maxlength="90" required aria-required="true">
-      </label>
-       <label>
-        <span class="font-semibold">Select preferred style:</span>
-        <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
-          <option>Modern/Minimalist</option>
-          <option>Glassmorphic</option>
-          <option>Neon/Futuristic</option>
-          <option>Dark Mode</option>
-          <option>Retro/Pixel</option>
-          <option>Corporate/Clean</option>
-          <option>Material Design</option>
-          <option>Apple-Style (Glass/Soft)</option>
-          <option>Monochrome</option>
-          <option>Hand-drawn/Sketch</option>
-          <option>Text-only</option>
-          <option>High Contrast</option>
-          <option>Accessible/ADA</option>
-          <option>Cyberpunk</option>
-          <option>Print-Ready</option>
-          <option>Chart-Heavy</option>
-          <option>Other (specify below)</option>
-        </select>
-      </label>
-      <label>
-        <span class="font-semibold">Choose coding stack:</span>
-        <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
-          <option>HTML5 + Tailwind CSS + ES6 JS</option>
-          <option>HTML5 + CSS3 + Vanilla JS</option>
-          <option>React (JSX, single-file)</option>
-          <option>Next.js (SSR, single-file)</option>
-          <option>Vue 3 (SFC)</option>
-          <option>SVG Only</option>
-          <option>Svelte</option>
-          <option>Python (Flask/Streamlit)</option>
-          <option>Jupyter Notebook (ipynb)</option>
-          <option>Rust + WASM</option>
-          <option>Go + WebAssembly</option>
-          <option>TypeScript (TSX)</option>
-          <option>Node.js CLI</option>
-          <option>Shell/Bash</option>
-          <option>PHP + Laravel</option>
-          <option>C# + .NET</option>
-          <option>Java + Spring</option>
-          <option>Android (Kotlin/Java)</option>
-          <option>iOS (Swift)</option>
-          <option>Other (describe below)</option>
-        </select>
-      </label>
-      <label>
-        <span class="font-semibold">Output format:</span>
-        <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
-          <option>Single HTML file</option>
-          <option>Markdown code block</option>
-          <option>Plain code (no block)</option>
-          <option>ZIP-ready (multi-file)</option>
-          <option>GitHub Gist</option>
-          <option>Downloadable PDF</option>
-          <option>Notion Embed</option>
-          <option>Copy-to-Clipboard Only</option>
-          <option>Other (describe below)</option>
-        </select>
-      </label>
-      <label>
-        <span class="font-semibold">Any extra features? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span>
-        <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Animation, IndexedDB, PWA, Charts, Auth" autocomplete="off">
-      </label>
-      <label>
-        <span class="font-semibold">Other specific requests? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span>
-        <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie SVG, accessibility, export, step-by-step" autocomplete="off">
-      </label>
-      <label class="flex items-center gap-2 text-sm text-gray-300">
-        <input type="checkbox" id="includeBranding" checked class="checkbox-emerald" aria-checked="true">
-        Include Shroomtop420™ branding in the prompt
-      </label>
-      <button type="submit" class="w-full py-2 mt-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all" aria-label="Generate JSON">Generate JSON</button>
+    <form id="promptForm" class="flex flex-col gap-4" autocomplete="off" aria-label="Prompt Configuration" name="promptForm">
+      <label><span class="font-semibold">What do you want to create?</span> <select class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2" id="projType" required="">
+        <option>
+          Visual Infographic
+        </option>
+        <option>
+          Web Tool/App
+        </option>
+        <option>
+          Landing Page
+        </option>
+        <option>
+          Animated Diagram
+        </option>
+        <option>
+          Dashboard/Report
+        </option>
+        <option>
+          Browser Extension
+        </option>
+        <option>
+          Interactive Data Viz
+        </option>
+        <option>
+          Game (2D/3D)
+        </option>
+        <option>
+          Mobile App
+        </option>
+        <option>
+          Chatbot/AI Assistant
+        </option>
+        <option>
+          IoT/Hardware Demo
+        </option>
+        <option>
+          API/Backend Service
+        </option>
+        <option>
+          CLI Tool
+        </option>
+        <option>
+          Documentation/Manual
+        </option>
+        <option>
+          Test Suite/Checker
+        </option>
+        <option>
+          Widget/Embed
+        </option>
+        <option>
+          Notebook/CodeLab
+        </option>
+        <option>
+          Multi-Agent Pipeline
+        </option>
+        <option>
+          Text-to-Speech Tool
+        </option>
+        <option>
+          AI-Powered Generator
+        </option>
+        <option>
+          Multi-Language App
+        </option>
+        <option>
+          Other (describe below)
+        </option>
+      </select></label> <label><span class="font-semibold">Describe your topic/subject:</span> <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., AI Safety Lifecycle" maxlength="90" required="" aria-required="true"></label> <label><span class="font-semibold">Select preferred style:</span> <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
+        <option>
+          Modern/Minimalist
+        </option>
+        <option>
+          Glassmorphic
+        </option>
+        <option>
+          Neon/Futuristic
+        </option>
+        <option>
+          Dark Mode
+        </option>
+        <option>
+          Retro/Pixel
+        </option>
+        <option>
+          Corporate/Clean
+        </option>
+        <option>
+          Material Design
+        </option>
+        <option>
+          Apple-Style (Glass/Soft)
+        </option>
+        <option>
+          Monochrome
+        </option>
+        <option>
+          Hand-drawn/Sketch
+        </option>
+        <option>
+          Text-only
+        </option>
+        <option>
+          High Contrast
+        </option>
+        <option>
+          Accessible/ADA
+        </option>
+        <option>
+          Cyberpunk
+        </option>
+        <option>
+          Print-Ready
+        </option>
+        <option>
+          Chart-Heavy
+        </option>
+        <option>
+          Other (specify below)
+        </option>
+      </select></label> <label><span class="font-semibold">Choose coding stack:</span> <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
+        <option>
+          HTML5 + Tailwind CSS + ES6 JS
+        </option>
+        <option>
+          HTML5 + CSS3 + Vanilla JS
+        </option>
+        <option>
+          React (JSX, single-file)
+        </option>
+        <option>
+          Next.js (SSR, single-file)
+        </option>
+        <option>
+          Vue 3 (SFC)
+        </option>
+        <option>
+          SVG Only
+        </option>
+        <option>
+          Svelte
+        </option>
+        <option>
+          Python (Flask/Streamlit)
+        </option>
+        <option>
+          Jupyter Notebook (ipynb)
+        </option>
+        <option>
+          Rust + WASM
+        </option>
+        <option>
+          Go + WebAssembly
+        </option>
+        <option>
+          TypeScript (TSX)
+        </option>
+        <option>
+          Node.js CLI
+        </option>
+        <option>
+          Shell/Bash
+        </option>
+        <option>
+          PHP + Laravel
+        </option>
+        <option>
+          C# + .NET
+        </option>
+        <option>
+          Java + Spring
+        </option>
+        <option>
+          Android (Kotlin/Java)
+        </option>
+        <option>
+          iOS (Swift)
+        </option>
+        <option>
+          Other (describe below)
+        </option>
+      </select></label> <label><span class="font-semibold">Output format:</span> <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
+        <option>
+          Single HTML file
+        </option>
+        <option>
+          Markdown code block
+        </option>
+        <option>
+          Plain code (no block)
+        </option>
+        <option>
+          ZIP-ready (multi-file)
+        </option>
+        <option>
+          GitHub Gist
+        </option>
+        <option>
+          Downloadable PDF
+        </option>
+        <option>
+          Notion Embed
+        </option>
+        <option>
+          Copy-to-Clipboard Only
+        </option>
+        <option>
+          Other (describe below)
+        </option>
+      </select></label> <label><span class="font-semibold">Any extra features? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span> <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Animation, IndexedDB, PWA, Charts, Auth" autocomplete="off"></label> <label><span class="font-semibold">Other specific requests? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span> <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie SVG, accessibility, export, step-by-step" autocomplete="off"></label> <label class="flex items-center gap-2 text-sm text-gray-300"><input type="checkbox" id="includeBranding" checked class="checkbox-emerald" aria-checked="true"> Include Shroomtop420™ branding in the prompt</label> <button type="submit" class="w-full py-2 mt-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all" aria-label="Generate JSON">Generate JSON</button>
     </form>
-
     <section id="library" class="section hidden" aria-label="Prompt Library">
       <h2 class="font-bold text-lg text-cyan-400 mb-1">Prompt Library</h2>
-      <div id="libraryButtons" class="flex flex-wrap gap-2 text-xs mb-2">
-        </div>
+      <div id="libraryButtons" class="flex flex-wrap gap-2 text-xs mb-2"></div>
       <div class="text-gray-300 text-xs">
         One click inserts a best-practice, production-ready prompt template. Edit as needed.
       </div>
     </section>
-
     <section id="expander" class="section hidden" aria-label="Prompt Expansion">
       <h2 class="font-bold text-lg text-emerald-400 mb-2">Magic Expand</h2>
-      <div class="mb-2 text-sm">Turn your single-line idea into a full, multi-stage prompt with test, doc, and audit hooks—automatically.</div>
+      <div class="mb-2 text-sm">
+        Turn your single-line idea into a full, multi-stage prompt with test, doc, and audit hooks—automatically.
+      </div>
       <pre id="expandedPrompt" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[70px] text-base shadow-inner border border-gray-800" aria-live="polite"></pre>
     </section>
-
     <section id="diff" class="section hidden" aria-label="Prompt Diff">
-      <h2 class="font-bold text-lg text-fuchsia-400 mb-2">Prompt Diff &amp; Explanation</h2>
+      <h2 class="font-bold text-lg text-fuchsia-400 mb-2">Prompt Diff & Explanation</h2>
       <div class="flex flex-col md:flex-row gap-4">
         <div class="w-full md:w-1/2">
-          <div class="font-bold text-sm mb-1 text-fuchsia-300">Raw Prompt (JSON)</div>
+          <div class="font-bold text-sm mb-1 text-fuchsia-300">
+            Raw Prompt (JSON)
+          </div>
           <pre id="rawPrompt" class="prompt-output diff-old"></pre>
         </div>
         <div class="w-full md:w-1/2">
-          <div class="font-bold text-sm mb-1 text-emerald-400">Improved Prompt (Multi-Stage)</div>
+          <div class="font-bold text-sm mb-1 text-emerald-400">
+            Improved Prompt (Multi-Stage)
+          </div>
           <pre id="improvedPrompt" class="prompt-output diff-new"></pre>
         </div>
       </div>
       <div class="explain mt-4" id="diffExplain" aria-live="polite"></div>
     </section>
-
     <section id="audit" class="section hidden" aria-label="Prompt Audit">
       <h2 class="font-bold text-lg text-yellow-400 mb-2">Prompt Audit & Meta</h2>
       <div id="auditReport" class="text-xs space-y-1" aria-live="polite"></div>
     </section>
-
     <section>
       <label class="font-semibold text-lg text-emerald-400">Generated JSON:</label>
-      <div id="promptOut" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[130px] text-base shadow-inner border border-gray-800" aria-live="polite"></div>
-      <button id="copyBtn" class="btn-copy mt-2 px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold">Copy JSON</button>
-      <p class="text-xs text-gray-500 mt-2 text-center">
-        Prompt crafted with ❤️ by <a href="https://github.com/shroomtop" target="_blank" class="underline text-emerald-400">Shroomtop420™</a>
-      </p>
+      <div id="promptOut" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[130px] text-base shadow-inner border border-gray-800" aria-live="polite"></div><button id="copyBtn" class="btn-copy mt-2 px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold">Copy JSON</button>
+      <p class="text-xs text-gray-500 mt-2 text-center">Prompt crafted with ❤️ by <a href="https://github.com/shroomtop" target="_blank" class="underline text-emerald-400">Shroomtop420™</a></p>
     </section>
-
     <footer class="text-xs text-gray-500 text-center pt-4 border-t border-gray-700/50 mt-4">
-      &copy; 2025-2026 Shroomtop420™ | Fully offline | v2025-06-27-b1
+      © 2025-2026 Shroomtop420™ | Fully offline | v2025-06-27-b1
     </footer>
   </main>
-
   <script>
   (() => {
     // --- IIFE to encapsulate logic and avoid global scope pollution ---
