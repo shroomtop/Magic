@@ -1,581 +1,251 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-black text-white" data-theme="dark">
+<html lang="en" class="bg-black text-white">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Perfect Prompt Generator Ultra v2.1 — Shroomtop420™</title>
-  <meta name="description" content="Next-gen, meta-evolutionary prompt builder for ChatGPT. Multi-stage, audit, explain, and expand. Offline, mobile-first, and zero-setup.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; connect-src 'self';">
-  <meta name="theme-color" content="#0b0c10">
-  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'&gt;&lt;text y='55%' x='10' font-size='38'&gt;🍄&lt;/text&gt;&lt;/svg&gt;">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Perfect Prompt Generator — Shroomtop420™</title>
+  <meta name="description" content="Instantly craft perfect prompts for ChatGPT to generate any visual or tool in your chosen style and stack. Self-contained, mobile-first, offline-ready.">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Base styles */
-    body { font-family: 'Segoe UI', system-ui, Arial, sans-serif; background-color: #0b0c10; transition: background-color 0.3s, color 0.3s; }
-    /* Theming for light mode */
-    html[data-theme='light'] body { background-color: #f1f5f9; color: #1e293b; }
-    html[data-theme='light'] .glass { background: rgba(255,255,255,0.7); border-color: #cbd5e166; }
-    html[data-theme='light'] .text-cyan-300 { color: #0891b2; }
-    html[data-theme='light'] .text-emerald-400 { color: #10b981; }
-    html[data-theme='light'] .text-gray-300 { color: #475569; }
-    html[data-theme='light'] select, html[data-theme='light'] input { background-color: #e2e8f0; color: #020617; }
-    html[data-theme='light'] #promptOut, html[data-theme='light'] .prompt-output { background-color: #f8fafc; border-color: #e2e8f0; color: #020617;}
-    html[data-theme='light'] .kbd-style { background: #e2e8f0; color: #3730a3; border-color: #d1d5db; }
-    html[data-theme='light'] .kbd-style:hover { background: #d1d5db; }
-    html[data-theme='light'] .explain { background: #fefce8; color: #ca8a04; }
-    html[data-theme='light'] .diff-old { background: #f1f5f9; color: #be185d; }
-    html[data-theme='light'] .diff-new { background: #f0fdfa; color: #047857; }
-    /* Shared styles */
-    .glass { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius:1.2rem; box-shadow: 0 8px 32px #0000003d; border: 1px solid #21222d66; transition: background-color 0.3s; }
-    .prompt-output { white-space: pre-wrap; font-family: 'JetBrains Mono', 'Fira Mono', Consolas, Menlo, monospace; font-size: 1.02em; transition: background-color 0.3s; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0b0c10; }
+    .glass { background: rgba(36,39,47,0.68); border-radius:1.2rem; box-shadow: 0 8px 32px #0006; border: 1px solid #21222d66;}
+    ::selection { background: #16f5b4cc; color: #18181b;}
+    .prompt-output { white-space: pre-wrap; font-size: 1.02em; font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', 'Menlo', 'monospace'; }
     .btn-copy { transition: all 0.2s; }
     .btn-copy.copied { background: #16f5b4 !important; color: #18181b !important;}
     .checkbox-emerald:checked { accent-color: #16f5b4; }
-    select, input { outline: none; transition: background-color 0.3s; }
-    .diff-old { background: #1e293b; color: #e879f9; padding: 0.75rem; border-radius: 0.75rem; }
-    .diff-new { background: #022c22; color: #16f5b4; padding: 0.75rem; border-radius: 0.75rem; }
-    .explain { font-size: 0.97em; background: #18181b; border-radius: 0.7em; padding: 0.75rem; transition: background-color 0.3s; }
-    .section { border-left: 4px solid #16f5b4; padding-left: 1em; margin: 1.5em 0; transition: opacity 0.4s; }
-    .section.hidden { display: block; height: 0; opacity: 0; overflow: hidden; margin:0; padding:0; border:0; }
-    .kbd-style { display: inline-block; padding: 0.25em 0.6em; border-radius: 0.4em; background: #27272a; color: #a5b4fc; font-size: 0.92em; border: 1px solid #373737; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
-    .kbd-style:hover { background: #3f3f46; }
+    select, input { outline: none; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center px-2 py-8">
-  <main class="w-full max-w-2xl glass p-6 flex flex-col gap-6" aria-label="Prompt Generator Ultra">
+<body class="min-h-screen flex flex-col items-center justify-center px-2 py-8 bg-black">
+  <main class="w-full max-w-xl glass p-6 flex flex-col gap-6">
     <header class="mb-2 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-cyan-300">Perfect Prompt Generator <span class="text-emerald-400">Ultra</span></h1>
-      <p class="text-sm text-gray-300 mt-2">Craft, expand, refine, and audit ChatGPT prompts for any project.<br>
-      <span class="text-emerald-400">Meta-evolution. Mobile-first. Offline. No setup.</span></p>
+      <h1 class="text-3xl md:text-4xl font-bold text-cyan-300">Perfect Prompt Generator</h1>
+      <p class="text-sm text-gray-300 mt-2">Auto-craft optimal ChatGPT prompts for any visual, app, or code tool.<br><span class="text-emerald-400">Mobile-first. Offline. No setup.</span></p>
     </header>
-    <nav class="flex flex-wrap gap-3 justify-center text-xs mb-2">
-      <button type="button" class="kbd-style" data-section="expander">🔮 Magic Expand</button> <button type="button" class="kbd-style" data-section="diff">📝 Diff/Explain</button> <button type="button" class="kbd-style" data-section="library">📚 Prompt Library</button> <button type="button" class="kbd-style" data-section="audit">🛡️ Audit & Meta</button> <button type="button" class="kbd-style" id="themeToggle">🌓 Contrast</button>
-    </nav>
-    <form id="promptForm" class="flex flex-col gap-4" autocomplete="off" aria-label="Prompt Configuration" name="promptForm">
-      <label><span class="font-semibold">What do you want to create?</span> <select class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2" id="projType" required="">
-        <option>
-          Visual Infographic
-        </option>
-        <option>
-          Web Tool/App
-        </option>
-        <option>
-          Landing Page
-        </option>
-        <option>
-          Animated Diagram
-        </option>
-        <option>
-          Dashboard/Report
-        </option>
-        <option>
-          Browser Extension
-        </option>
-        <option>
-          Interactive Data Viz
-        </option>
-        <option>
-          Game (2D/3D)
-        </option>
-        <option>
-          Mobile App
-        </option>
-        <option>
-          Chatbot/AI Assistant
-        </option>
-        <option>
-          IoT/Hardware Demo
-        </option>
-        <option>
-          API/Backend Service
-        </option>
-        <option>
-          CLI Tool
-        </option>
-        <option>
-          Documentation/Manual
-        </option>
-        <option>
-          Test Suite/Checker
-        </option>
-        <option>
-          Widget/Embed
-        </option>
-        <option>
-          Notebook/CodeLab
-        </option>
-        <option>
-          Multi-Agent Pipeline
-        </option>
-        <option>
-          Text-to-Speech Tool
-        </option>
-        <option>
-          AI-Powered Generator
-        </option>
-        <option>
-          Multi-Language App
-        </option>
-        <option>
-          Other (describe below)
-        </option>
-      </select></label> <label><span class="font-semibold">Describe your topic/subject:</span> <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., AI Safety Lifecycle" maxlength="90" required="" aria-required="true"></label> <label><span class="font-semibold">Select preferred style:</span> <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
-        <option>
-          Modern/Minimalist
-        </option>
-        <option>
-          Glassmorphic
-        </option>
-        <option>
-          Neon/Futuristic
-        </option>
-        <option>
-          Dark Mode
-        </option>
-        <option>
-          Retro/Pixel
-        </option>
-        <option>
-          Corporate/Clean
-        </option>
-        <option>
-          Material Design
-        </option>
-        <option>
-          Apple-Style (Glass/Soft)
-        </option>
-        <option>
-          Monochrome
-        </option>
-        <option>
-          Hand-drawn/Sketch
-        </option>
-        <option>
-          Text-only
-        </option>
-        <option>
-          High Contrast
-        </option>
-        <option>
-          Accessible/ADA
-        </option>
-        <option>
-          Cyberpunk
-        </option>
-        <option>
-          Print-Ready
-        </option>
-        <option>
-          Chart-Heavy
-        </option>
-        <option>
-          Other (specify below)
-        </option>
-      </select></label> <label><span class="font-semibold">Choose coding stack:</span> <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
-        <option>
-          HTML5 + Tailwind CSS + ES6 JS
-        </option>
-        <option>
-          HTML5 + CSS3 + Vanilla JS
-        </option>
-        <option>
-          React (JSX, single-file)
-        </option>
-        <option>
-          Next.js (SSR, single-file)
-        </option>
-        <option>
-          Vue 3 (SFC)
-        </option>
-        <option>
-          SVG Only
-        </option>
-        <option>
-          Svelte
-        </option>
-        <option>
-          Python (Flask/Streamlit)
-        </option>
-        <option>
-          Jupyter Notebook (ipynb)
-        </option>
-        <option>
-          Rust + WASM
-        </option>
-        <option>
-          Go + WebAssembly
-        </option>
-        <option>
-          TypeScript (TSX)
-        </option>
-        <option>
-          Node.js CLI
-        </option>
-        <option>
-          Shell/Bash
-        </option>
-        <option>
-          PHP + Laravel
-        </option>
-        <option>
-          C# + .NET
-        </option>
-        <option>
-          Java + Spring
-        </option>
-        <option>
-          Android (Kotlin/Java)
-        </option>
-        <option>
-          iOS (Swift)
-        </option>
-        <option>
-          Other (describe below)
-        </option>
-      </select></label> <label><span class="font-semibold">Output format:</span> <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200 p-2">
-        <option>
-          Single HTML file
-        </option>
-        <option>
-          Markdown code block
-        </option>
-        <option>
-          Plain code (no block)
-        </option>
-        <option>
-          ZIP-ready (multi-file)
-        </option>
-        <option>
-          GitHub Gist
-        </option>
-        <option>
-          Downloadable PDF
-        </option>
-        <option>
-          Notion Embed
-        </option>
-        <option>
-          Copy-to-Clipboard Only
-        </option>
-        <option>
-          Other (describe below)
-        </option>
-      </select></label> <label><span class="font-semibold">Any extra features? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span> <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Animation, IndexedDB, PWA, Charts, Auth" autocomplete="off"></label> <label><span class="font-semibold">Other specific requests? <span class="text-gray-400 font-normal">(Optional, comma-separated)</span></span> <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie SVG, accessibility, export, step-by-step" autocomplete="off"></label> <label class="flex items-center gap-2 text-sm text-gray-300"><input type="checkbox" id="includeBranding" checked class="checkbox-emerald" aria-checked="true"> Include Shroomtop420™ branding in the prompt</label> <button type="submit" class="w-full py-2 mt-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all" aria-label="Generate JSON">Generate JSON</button>
+
+    <form id="promptForm" class="flex flex-col gap-4" autocomplete="off">
+      <label>
+        <span class="font-semibold">What do you want to create?</span>
+        <select class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200" id="projType" required>
+          <option>Visual Infographic</option>
+          <option>Web Tool/App</option>
+          <option>Landing Page</option>
+          <option>Animated Diagram</option>
+          <option>Dashboard/Report</option>
+          <option>Browser Extension</option>
+          <option>Interactive Data Viz</option>
+          <option>Game (2D/3D)</option>
+          <option>Mobile App</option>
+          <option>Chatbot/AI Assistant</option>
+          <option>IoT/Hardware Demo</option>
+          <option>API/Backend Service</option>
+          <option>CLI Tool</option>
+          <option>Documentation/Manual</option>
+          <option>Test Suite/Checker</option>
+          <option>Widget/Embed</option>
+          <option>Notebook/CodeLab</option>
+          <option>Multi-Agent Pipeline</option>
+          <option>Text-to-Speech Tool</option>
+          <option>AI-Powered Generator</option>
+          <option>Multi-Language App</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Describe your topic/subject:</span>
+        <input id="topic" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., AI Safety Lifecycle" maxlength="90" required>
+      </label>
+      <label>
+        <span class="font-semibold">Select preferred style:</span>
+        <select id="style" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200">
+          <option>Modern/Minimalist</option>
+          <option>Glassmorphic</option>
+          <option>Neon/Futuristic</option>
+          <option>Dark Mode</option>
+          <option>Retro/Pixel</option>
+          <option>Corporate/Clean</option>
+          <option>Material Design</option>
+          <option>Apple-Style (Glass/Soft)</option>
+          <option>Monochrome</option>
+          <option>Hand-drawn/Sketch</option>
+          <option>Text-only</option>
+          <option>High Contrast</option>
+          <option>Accessible/ADA</option>
+          <option>Cyberpunk</option>
+          <option>Print-Ready</option>
+          <option>Chart-Heavy</option>
+          <option>Other (specify below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Choose coding stack:</span>
+        <select id="stack" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200">
+          <option>HTML5 + Tailwind CSS + ES6 JS</option>
+          <option>HTML5 + CSS3 + Vanilla JS</option>
+          <option>React (JSX, single-file)</option>
+          <option>Next.js (SSR, single-file)</option>
+          <option>Vue 3 (SFC)</option>
+          <option>SVG Only</option>
+          <option>Svelte</option>
+          <option>Python (Flask/Streamlit)</option>
+          <option>Jupyter Notebook (ipynb)</option>
+          <option>Rust + WASM</option>
+          <option>Go + WebAssembly</option>
+          <option>TypeScript (TSX)</option>
+          <option>Node.js CLI</option>
+          <option>Shell/Bash</option>
+          <option>PHP + Laravel</option>
+          <option>C# + .NET</option>
+          <option>Java + Spring</option>
+          <option>Android (Kotlin/Java)</option>
+          <option>iOS (Swift)</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Output format:</span>
+        <select id="format" class="mt-1 w-full rounded-lg bg-gray-800 border-0 text-cyan-200">
+          <option>Single HTML file</option>
+          <option>Markdown code block</option>
+          <option>Plain code (no block)</option>
+          <option>ZIP-ready (multi-file)</option>
+          <option>GitHub Gist</option>
+          <option>Downloadable PDF</option>
+          <option>Notion Embed</option>
+          <option>Copy-to-Clipboard Only</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+      <label>
+        <span class="font-semibold">Any extra features? (Optional, comma-separated)</span>
+        <input id="extras" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Animation, IndexedDB, PWA, AI, Charts, Auth,..." autocomplete="off">
+      </label>
+      <label>
+        <span class="font-semibold">Other specific requests? (Optional, comma-separated)</span>
+        <input id="other" class="mt-1 w-full rounded-lg bg-gray-800 border-0 px-3 py-2 text-cyan-100" placeholder="e.g., Lottie SVG, accessibility, export, step-by-step, 3D" autocomplete="off">
+      </label>
+      <label class="flex items-center gap-2 text-sm text-gray-300">
+        <input type="checkbox" id="includeBranding" checked class="checkbox-emerald">
+        Include Shroomtop420™ branding in the prompt
+      </label>
+      <button type="submit" class="w-full py-2 mt-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition-all">Generate JSON</button>
     </form>
-    <section id="library" class="section hidden" aria-label="Prompt Library">
-      <h2 class="font-bold text-lg text-cyan-400 mb-1">Prompt Library</h2>
-      <div id="libraryButtons" class="flex flex-wrap gap-2 text-xs mb-2"></div>
-      <div class="text-gray-300 text-xs">
-        One click inserts a best-practice, production-ready prompt template. Edit as needed.
-      </div>
-    </section>
-    <section id="expander" class="section hidden" aria-label="Prompt Expansion">
-      <h2 class="font-bold text-lg text-emerald-400 mb-2">Magic Expand</h2>
-      <div class="mb-2 text-sm">
-        Turn your single-line idea into a full, multi-stage prompt with test, doc, and audit hooks—automatically.
-      </div>
-      <pre id="expandedPrompt" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[70px] text-base shadow-inner border border-gray-800" aria-live="polite"></pre>
-    </section>
-    <section id="diff" class="section hidden" aria-label="Prompt Diff">
-      <h2 class="font-bold text-lg text-fuchsia-400 mb-2">Prompt Diff & Explanation</h2>
-      <div class="flex flex-col md:flex-row gap-4">
-        <div class="w-full md:w-1/2">
-          <div class="font-bold text-sm mb-1 text-fuchsia-300">
-            Raw Prompt (JSON)
-          </div>
-          <pre id="rawPrompt" class="prompt-output diff-old"></pre>
-        </div>
-        <div class="w-full md:w-1/2">
-          <div class="font-bold text-sm mb-1 text-emerald-400">
-            Improved Prompt (Multi-Stage)
-          </div>
-          <pre id="improvedPrompt" class="prompt-output diff-new"></pre>
-        </div>
-      </div>
-      <div class="explain mt-4" id="diffExplain" aria-live="polite"></div>
-    </section>
-    <section id="audit" class="section hidden" aria-label="Prompt Audit">
-      <h2 class="font-bold text-lg text-yellow-400 mb-2">Prompt Audit & Meta</h2>
-      <div id="auditReport" class="text-xs space-y-1" aria-live="polite"></div>
-    </section>
+
     <section>
       <label class="font-semibold text-lg text-emerald-400">Generated JSON:</label>
-      <div id="promptOut" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[130px] text-base shadow-inner border border-gray-800" aria-live="polite"></div><button id="copyBtn" class="btn-copy mt-2 px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold">Copy JSON</button>
-      <p class="text-xs text-gray-500 mt-2 text-center">Prompt crafted with ❤️ by <a href="https://github.com/shroomtop" target="_blank" class="underline text-emerald-400">Shroomtop420™</a></p>
+      <div id="promptOut" class="prompt-output bg-gray-900/80 mt-2 rounded-lg p-4 min-h-[130px] text-base shadow-inner border border-gray-800"></div>
+      <button id="copyBtn" class="btn-copy mt-2 px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold">Copy JSON</button>
+      <p class="text-xs text-gray-500 mt-2 text-center">
+        Prompt crafted with ❤️ by <a href="https://www.shroomtop420.com" target="_blank" class="underline text-emerald-400">Shroomtop420™</a>
+      </p>
     </section>
-    <footer class="text-xs text-gray-500 text-center pt-4 border-t border-gray-700/50 mt-4">
-      © 2025-2026 Shroomtop420™ | Fully offline | v2025-06-27-b1
+
+    <footer class="text-xs text-gray-500 text-center pt-4">
+      &copy; 2025 Shroomtop420™ | Fully offline | <a href="https://www.shroomtop420.com/" target="_blank" class="underline text-cyan-400">Site</a>
     </footer>
   </main>
+
   <script>
-  (() => {
-    // --- IIFE to encapsulate logic and avoid global scope pollution ---
-    document.addEventListener('DOMContentLoaded', () => {
-
-      // --- CACHE DOM ELEMENTS ---
-      const elements = {
-        html: document.documentElement,
-        body: document.body,
-        form: document.getElementById('promptForm'),
-        inputs: {
-          projType: document.getElementById('projType'),
-          topic: document.getElementById('topic'),
-          style: document.getElementById('style'),
-          stack: document.getElementById('stack'),
-          format: document.getElementById('format'),
-          extras: document.getElementById('extras'),
-          other: document.getElementById('other'),
-          includeBranding: document.getElementById('includeBranding'),
-        },
-        outputs: {
-          promptOut: document.getElementById('promptOut'),
-          expandedPrompt: document.getElementById('expandedPrompt'),
-          rawPrompt: document.getElementById('rawPrompt'),
-          improvedPrompt: document.getElementById('improvedPrompt'),
-          diffExplain: document.getElementById('diffExplain'),
-          auditReport: document.getElementById('auditReport'),
-        },
-        buttons: {
-          copyBtn: document.getElementById('copyBtn'),
-          themeToggle: document.getElementById('themeToggle'),
-          libraryButtons: document.getElementById('libraryButtons'),
-          nav: document.querySelector('nav'),
-        },
-        sections: {
-          expander: document.getElementById('expander'),
-          diff: document.getElementById('diff'),
-          library: document.getElementById('library'),
-          audit: document.getElementById('audit'),
-        }
-      };
-
-      // --- CONFIG & CONSTANTS ---
-      const SCHEMA_VERSION = "2025-06-27-b1";
-      const PROMPT_RULES = [
-        "Output a single, self-contained file (unless ZIP is selected).",
-        "All CSS/JS must be inline or via CDN to ensure portability.",
-        "Use semantic, accessible HTML (ARIA roles) and a responsive layout.",
-        "No external image dependencies; use SVG, CSS, or data URIs.",
-        "Adhere to the requested visual style and coding stack.",
-        "Output code in a markdown block unless specified otherwise."
+    // Autofill from URL hash (unchanged)
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, '').replace(/\+/g, ' '));
+      const boxes = [
+        document.querySelector('input[placeholder*="topic"]'),
+        document.querySelector('input[placeholder*="subject"]'),
+        document.querySelector('input[name="topic"]'),
+        document.querySelector('#topic'),
+        document.querySelector('#subject'),
+        document.querySelectorAll('input')[1],
       ];
-      const PROMPT_END_INSTRUCTION = "Ready to copy-paste and run.";
-      const PROMPT_LIBRARY = {
-          "Full-Stack App": { topic: "Productivity Dashboard", projType: "Web Tool/App", style: "Modern/Minimalist", stack: "HTML5 + Tailwind CSS + ES6 JS", format: "Single HTML file", extras: ["Authentication", "PWA", "Responsive UI"], special: ["Include test suite and README"], },
-          "Dashboard": { topic: "Sales Analytics", projType: "Dashboard/Report", style: "Corporate/Clean", stack: "React (JSX, single-file)", format: "Markdown code block", extras: ["Charts", "Export CSV"], special: ["Include step-by-step onboarding", "Export to PDF"], },
-          "Landing Page": { topic: "AI Agency Service", projType: "Landing Page", style: "Neon/Futuristic", stack: "HTML5 + Tailwind CSS + ES6 JS", format: "Single HTML file", extras: ["Animated SVG", "Contact Form"], special: ["SEO meta tags", "Performance audit"], },
-          "Game": { topic: "3D Pong AI", projType: "Game (2D/3D)", style: "Retro/Pixel", stack: "HTML5 + CSS3 + Vanilla JS", format: "Single HTML file", extras: ["AI Opponent", "Scoreboard"], special: ["Mobile controls", "Sound effects"], },
-          "API Service": { topic: "Weather Data Aggregator", projType: "API/Backend Service", style: "Corporate/Clean", stack: "Python (Flask/Streamlit)", format: "Plain code (no block)", extras: ["REST API", "OpenAPI docs"], special: ["Dockerfile", "Test coverage"], },
-          "Test Suite": { topic: "Code Coverage Reporter", projType: "Test Suite/Checker", style: "High Contrast", stack: "Node.js CLI", format: "ZIP-ready (multi-file)", extras: ["HTML report", "Badge generator"], special: ["CI pipeline", "README example"], },
-      };
-
-      // --- CORE FUNCTIONS ---
-
-      /**
-       * Generates a structured JSON object from the current form inputs.
-       * @returns {object} The prompt configuration object.
-       */
-      const generatePromptConfig = () => {
-        const parseList = (value) => value.split(',').map(x => x.trim()).filter(Boolean);
-        return {
-          schema_version: SCHEMA_VERSION,
-          project_type: elements.inputs.projType.value,
-          topic: elements.inputs.topic.value,
-          style: elements.inputs.style.value,
-          stack: elements.inputs.stack.value,
-          format: elements.inputs.format.value,
-          features: parseList(elements.inputs.extras.value),
-          special_requests: parseList(elements.inputs.other.value),
-          branding: elements.inputs.includeBranding.checked,
-          rules: PROMPT_RULES,
-          end_instruction: PROMPT_END_INSTRUCTION
-        };
-      };
-
-      /**
-       * Renders the generated JSON config to the main output area.
-       */
-      const renderJSON = () => {
-        const config = generatePromptConfig();
-        elements.outputs.promptOut.textContent = JSON.stringify(config, null, 2);
-        if (elements.buttons.copyBtn.classList.contains('copied')) {
-            elements.buttons.copyBtn.classList.remove('copied');
-            elements.buttons.copyBtn.textContent = 'Copy JSON';
+      for (const box of boxes) {
+        if (box && hash && (!box.value || box.value.startsWith("e.g."))) {
+          box.value = hash;
+          box.dispatchEvent(new Event('input', { bubbles: true }));
+          break;
         }
-      };
-
-      /**
-       * Expands the JSON config into a detailed, multi-stage prompt.
-       */
-      const expandPrompt = () => {
-        const config = generatePromptConfig();
-        const stages = [
-            `Stage 1 (Setup): Scaffold the project structure for a ${config.project_type} (“${config.topic}”) in ${config.stack}, styled as ${config.style}. Include a README, license, all necessary build/dev scripts, and placeholder tests.`,
-            `Stage 2 (Core Logic): Implement the main feature(s) based on the topic. Ensure all placeholder tests are updated and passing.`,
-            (config.features.length > 0) && `Stage 3 (Extra Features): Add the following features: ${config.features.join(", ")}.`,
-            `Stage 4 (Documentation): Document all functions, components, and API endpoints with clear explanations and usage examples.`,
-            `Stage 5 (Audit & Finalize): Audit the entire project for accessibility, security, and performance. Embed version, metadata, and license info. Ensure it's ready for deployment.`
-        ].filter(Boolean); // Filter out empty stages
-
-        let output = `# Project Prompt: ${config.topic}\n\n`;
-        output += `**Objective**: Build a high-quality, production-ready "${config.project_type}" about "${config.topic}".\n`;
-        output += `**Key Parameters**:\n`;
-        output += `- Style: ${config.style}\n- Stack: ${config.stack}\n- Output Format: ${config.format}\n`;
-        if (config.features.length) output += `- Features: ${config.features.join(", ")}\n`;
-        if (config.special_requests.length) output += `- Special Requests: ${config.special_requests.join(", ")}\n`;
-        if (config.branding) output += "- Branding: Must include Shroomtop420™ branding where appropriate.\n";
-        output += `\n**Execution Plan (Follow these stages strictly):**\n`;
-        output += stages.map((s, i) => `  ${i + 1}. ${s}`).join('\n');
-        output += `\n\n**Mandatory Rules:**\n` + PROMPT_RULES.map(r => `- ${r}`).join('\n');
-        output += `\n\n${PROMPT_END_INSTRUCTION}\n`;
-
-        elements.outputs.expandedPrompt.textContent = output;
-      };
-
-      /**
-       * Updates the Diff & Explain section.
-       */
-      const showDiff = () => {
-        const config = generatePromptConfig();
-        elements.outputs.rawPrompt.textContent = JSON.stringify(config, null, 2);
-        const expandedText = elements.outputs.expandedPrompt.textContent;
-        elements.outputs.improvedPrompt.textContent = expandedText || "[Expand the prompt first to see the improved version]";
-
-        let explanation = `<b>What changed?</b> The expanded prompt translates your JSON config into a context-rich, multi-stage request. It explicitly defines the project goal, step-by-step execution plan, and mandatory rules.`;
-        explanation += `<br><br><b>Why is this better?</b> AI models produce far more robust and accurate results when given clear, structured, and sequential instructions. This "chain-of-thought" process prevents the AI from skipping steps and ensures all requirements, including testing, documentation, and auditing, are met, leading to enterprise-grade output.`;
-        elements.outputs.diffExplain.innerHTML = explanation;
-      };
-
-      /**
-       * Generates and displays the prompt audit report.
-       */
-      const auditPrompt = () => {
-        const config = generatePromptConfig();
-        const ruleItems = PROMPT_RULES.map(r => `<li>${r}</li>`).join('');
-        const html = `
-          <b>Audit Trail</b>
-          <div>Schema: <code>${config.schema_version}</code></div>
-          <div>Generated: <code>${new Date().toISOString()}</code></div>
-          <div>Author: <code>Shroomtop420™</code></div>
-          <div>Rules Enforced: <ul class="list-disc list-inside m-0">${ruleItems}</ul></div>
-          <div><b>License:</b> <span class="text-emerald-400">MIT</span> (see LICENSE.txt)</div>
-          <div><b>Omission Report:</b> <span class="text-yellow-400">No critical omissions. All logic, meta, and audit hooks included.</span></div>
-          <div><b>Suppression Simulation:</b> <span class="text-yellow-400">No suppressed adversarial or edge-case logic. Output is production- and audit-ready.</span></div>
-        `;
-        elements.outputs.auditReport.innerHTML = html;
-      };
-
-      /**
-       * Populates the form from a library template.
-       * @param {string} key - The key of the template in PROMPT_LIBRARY.
-       */
-      const useLibrary = (key) => {
-        const template = PROMPT_LIBRARY[key];
-        if (!template) return;
-        elements.inputs.topic.value = template.topic || "";
-        elements.inputs.projType.value = template.projType || "";
-        elements.inputs.style.value = template.style || "";
-        elements.inputs.stack.value = template.stack || "";
-        elements.inputs.format.value = template.format || "";
-        elements.inputs.extras.value = (template.extras || []).join(', ');
-        elements.inputs.other.value = (template.special || []).join(', ');
-        renderJSON();
-        // Also update any open sections
-        if (!elements.sections.expander.classList.contains('hidden')) expandPrompt();
-        if (!elements.sections.diff.classList.contains('hidden')) showDiff();
-        if (!elements.sections.audit.classList.contains('hidden')) auditPrompt();
-      };
-      
-      /**
-       * Toggles the visibility of a given section.
-       * @param {string} id - The ID of the section to toggle.
-       */
-      const toggleSection = (id) => {
-          const sectionToToggle = elements.sections[id];
-          if (!sectionToToggle) return;
-          const isHidden = sectionToToggle.classList.contains('hidden');
-          
-          Object.values(elements.sections).forEach(section => {
-              section.classList.add('hidden');
-          });
-
-          if (isHidden) {
-              sectionToToggle.classList.remove('hidden');
-              // Run the update function for the now-visible section
-              if (id === 'expander') expandPrompt();
-              if (id === 'diff') { expandPrompt(); showDiff(); }
-              if (id === 'audit') auditPrompt();
-          }
-      };
-
-      /**
-       * Toggles the color theme between 'dark' and 'light'.
-       */
-      const toggleTheme = () => {
-        const newTheme = elements.html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        elements.html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-      };
-      
-      // --- EVENT LISTENERS ---
-
-      elements.form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        renderJSON();
-        auditPrompt(); // Always run audit on generation
-      });
-      
-      elements.buttons.nav.addEventListener('click', (e) => {
-        const target = e.target.closest('.kbd-style');
-        if (!target) return;
-        const sectionId = target.dataset.section;
-        if (sectionId) {
-          toggleSection(sectionId);
-        } else if (target.id === 'themeToggle') {
-            toggleTheme();
-        }
-      });
-      
-      elements.buttons.libraryButtons.addEventListener('click', (e) => {
-        const target = e.target.closest('.kbd-style');
-        if (target && target.dataset.key) {
-            useLibrary(target.dataset.key);
-        }
-      });
-
-      elements.buttons.copyBtn.addEventListener('click', () => {
-        const text = elements.outputs.promptOut.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-          elements.buttons.copyBtn.classList.add('copied');
-          elements.buttons.copyBtn.textContent = 'Copied!';
-          setTimeout(() => {
-            elements.buttons.copyBtn.classList.remove('copied');
-            elements.buttons.copyBtn.textContent = 'Copy JSON';
-          }, 2000);
-        });
-      });
-      
-      // Any input change should re-render the JSON
-      Object.values(elements.inputs).forEach(input => {
-        input.addEventListener('input', renderJSON);
-      });
-
-      // --- INITIALIZATION ---
-
-      // Apply saved theme from localStorage
-      if (localStorage.getItem('theme') === 'light') {
-        elements.html.setAttribute('data-theme', 'light');
       }
-
-      // Populate library buttons
-      elements.buttons.libraryButtons.innerHTML = Object.keys(PROMPT_LIBRARY)
-          .map(key => `<button class="kbd-style" type="button" data-key="${key}">${key}</button>`)
-          .join('');
-
-      // Initial render on page load
-      renderJSON();
+      if (boxes[0]) boxes[0].focus();
     });
-  })();
+
+    // JSON schema version (for downstream compatibility)
+    const SCHEMA_VERSION = "2025-06-13.01";
+
+    // Hardcoded rules for the JSON output
+    const jsonRules = [
+      "Output a single, self-contained file (unless ZIP is selected)",
+      "All CSS/JS must be inline or via CDN",
+      "Use semantic, accessible HTML and responsive layout",
+      "No external image dependencies (SVG/CSS/HTML only)",
+      "Match this structure: [headline/subheadline][main diagram/feature][clean, centered, visually balanced]",
+      "Output as a markdown code block unless otherwise specified"
+    ];
+    const jsonEnd = "Ready to copy-paste and run.";
+
+    // Generate strict JSON object from form
+    function genJSON() {
+      const projType = document.getElementById('projType').value;
+      const topic = document.getElementById('topic').value;
+      const style = document.getElementById('style').value;
+      const stack = document.getElementById('stack').value;
+      const format = document.getElementById('format').value;
+      // Split by comma, trim, remove empty
+      const extrasRaw = document.getElementById('extras').value;
+      const extras = extrasRaw.split(',')
+        .map(x => x.trim()).filter(Boolean);
+
+      const otherRaw = document.getElementById('other').value;
+      const special_requests = otherRaw.split(',')
+        .map(x => x.trim()).filter(Boolean);
+
+      const branding = document.getElementById('includeBranding').checked;
+
+      // Assemble JSON object with strict mapping and schema versioning
+      const obj = {
+        schema_version: SCHEMA_VERSION,
+        project_type: projType,
+        topic: topic,
+        style: style,
+        stack: stack,
+        format: format,
+        features: extras,
+        special_requests: special_requests,
+        branding: branding,
+        rules: jsonRules,
+        end_instruction: jsonEnd
+      };
+      return obj;
+    }
+
+    // Pretty-print JSON output
+    function renderJSON() {
+      const json = genJSON();
+      const pretty = JSON.stringify(json, null, 2);
+      document.getElementById('promptOut').textContent = pretty;
+      copyBtn.classList.remove('copied');
+      copyBtn.textContent = 'Copy JSON';
+    }
+
+    // Form submit event
+    const form = document.getElementById('promptForm');
+    form.onsubmit = e => {
+      e.preventDefault();
+      renderJSON();
+    };
+
+    // Copy to clipboard button (strict JSON only)
+    const copyBtn = document.getElementById('copyBtn');
+    copyBtn.onclick = () => {
+      const txt = document.getElementById('promptOut').textContent;
+      navigator.clipboard.writeText(txt)
+        .then(() => {
+          copyBtn.classList.add('copied');
+          copyBtn.textContent = 'Copied!';
+        });
+    };
+
+    // On load, output blank JSON so UI isn't empty
+    window.onload = () => renderJSON();
   </script>
 </body>
 </html>
